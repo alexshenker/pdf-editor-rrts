@@ -1,0 +1,42 @@
+
+:root {
+  --inputBox-height: 200px;
+  --inputBox-width: 100%;
+}
+
+.dropzone {
+  display: flex;
+  justify-content: center;
+}
+
+/* padding should match inputBox height for drag & drop to work */
+.dropzone input {
+  opacity: 0;
+  position: absolute;
+  height: 0px;
+  width: 0px;
+  padding: calc(var(--inputBox-height)/2) 100%;
+  cursor: copy;
+}
+input[type=file]::file-selector-button {
+  display: none;
+}
+
+.inputLabel {
+  height: var(--inputBox-height);
+  width: var(--inputBox-width);
+}
+.inputBox {
+  height: var(--inputBox-height);
+  width: var(--inputBox-width);
+  box-shadow:inset 0 0 8px rgba(0,0,0,0.4);
+  border-radius: 8px;
+  /* Inner Elements */ 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inputBox p {
+  font-size: 20px;
+}
