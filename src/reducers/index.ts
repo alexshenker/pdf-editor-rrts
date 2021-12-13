@@ -1,17 +1,12 @@
-import { combineReducers, AnyAction } from "redux";
-import * as actionTypes from '../types'
+import { combineReducers } from "redux";
 
-const fileReducer = (state: FileList | null = null, action: AnyAction) => {
-  switch(action.type) {
-    case actionTypes.ADD_FILE:
-      return action.payload
-    default:
-      return state
-  }
-}
+import fileReducer from "./fileReducer";
+import zoomReducer from "./zoomReducer";
+
 
 const rootReducer = combineReducers({
-  file: fileReducer
+  file: fileReducer,
+  zoom: zoomReducer
 })
 
 export default rootReducer

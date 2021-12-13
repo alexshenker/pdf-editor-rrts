@@ -1,0 +1,18 @@
+
+:root {
+  --tool-btn-size: 18px;
+}
+
+.tool_btn {
+  border: none;
+  border-radius: 100%;
+  padding: 5px;
+}
+.tool_btn .icon_container {
+  width: var(--tool-btn-size);
+  height: var(--tool-btn-size);
+  font-size: var(--tool-btn-size);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
