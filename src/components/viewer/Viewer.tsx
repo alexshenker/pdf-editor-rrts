@@ -16,7 +16,7 @@ export default function Viewer() {
   return (
     <div className={styles.viewer}>
       <Document
-        file={file}
+        file={file.pdf}
         options={{
           cMapUrl: `//cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
           cMapPacked: true,
