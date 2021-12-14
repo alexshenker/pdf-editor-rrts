@@ -1,4 +1,6 @@
+div {
+  overflow-x: scroll !important;
+}
 .viewer canvas {
-  width: 100% !important;
   height: auto !important;
 }
