@@ -1,11 +1,8 @@
 import React, { FC } from 'react'
 import styles from './Ui.module.css'
 
-interface ToolBtnProps {
-  handleClick(): void
-  text: string
-  children: JSX.Element
-}
+//Type
+import { ToolBtnProps } from '../types'
 
 const ToolBtn: FC<ToolBtnProps> = ({ handleClick, text, children }) => {
   return (

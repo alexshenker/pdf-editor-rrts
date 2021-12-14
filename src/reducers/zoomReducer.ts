@@ -1,5 +1,5 @@
 import { AnyAction } from "redux";
-import { ZOOM_OUT,ZOOM_IN, ZOOM_CUSTOM} from '../types'
+import { ZOOM_OUT,ZOOM_IN, ZOOM_CUSTOM} from '../actionTypes'
 
 export default function zoomReducer(state: number = 100, action: AnyAction) {
   switch(action.type) {

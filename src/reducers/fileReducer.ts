@@ -1,12 +1,8 @@
 import { AnyAction } from 'redux'
-import * as actionTypes from '../types'
+import * as actionTypes from '../actionTypes'
 
-interface FileStateType {
-  pdf: FileList | null
-  numPages: number
-  width: number
-  height: number
-}
+//Type
+import { FileStateType } from '../types'
 
 const initialState = {
   pdf: null,

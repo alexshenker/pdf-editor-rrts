@@ -4,7 +4,7 @@ import { RootState } from '../../../reducers'
 import styles from './TurnPageTool.module.css'
 
 //action types
-import { PAGE_DOWN, PAGE_UP, PAGE_CUSTOM } from '../../../types'
+import { PAGE_DOWN, PAGE_UP, PAGE_CUSTOM } from '../../../actionTypes'
 
 //UI
 import ToolBtn from '../../../ui/ToolBtn'

@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './Dropzone.module.css'
 import { useDispatch } from 'react-redux'
-import { ADD_FILE } from '../../types'
+import { ADD_FILE } from '../../actionTypes'
 
 //PDF LOADER
 import { PDFDocument } from 'pdf-lib'

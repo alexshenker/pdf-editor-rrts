@@ -1,5 +1,5 @@
 import { AnyAction } from "redux";
-import {PAGE_DOWN, PAGE_UP, PAGE_CUSTOM} from '../types'
+import {PAGE_DOWN, PAGE_UP, PAGE_CUSTOM} from '../actionTypes'
 
 export default function pageReducer(state: number = 1, action: AnyAction) {
   switch(action.type) {

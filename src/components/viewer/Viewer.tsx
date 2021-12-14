@@ -17,8 +17,8 @@ import { Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack'
 export default function Viewer() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const file = useSelector((state: RootState) => state.file)
-  const zoom = useSelector((state: RootState) => state.zoom)
-  const page = useSelector((state: RootState) => state.page)
+  const zoom: Number = useSelector((state: RootState) => state.zoom)
+  const pageNum: number = useSelector((state: RootState) => state.page)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function Viewer() {
 
   useEffect(() => {
     renderPage()
-  }, [page, pdf])
+  }, [pageNum, pdf])
 
   const renderPdf = async () => {
     const arrBuff = await file.pdf
@@ -51,7 +51,7 @@ export default function Viewer() {
 
   const renderPage = () => {
     if (!pdf) return
-    pdf.getPage(page).then(async (pageDoc: PDFPageProxy) => {
+    pdf.getPage(pageNum).then(async (pageDoc: PDFPageProxy) => {
       if (!canvasRef.current) return
       const canvas = canvasRef.current
       const ctx = canvas.getContext('2d')
