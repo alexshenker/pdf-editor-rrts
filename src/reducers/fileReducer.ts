@@ -1,5 +1,5 @@
 import { AnyAction } from 'redux'
-import * as actionTypes from '../actionTypes'
+import { ADD_FILE } from '../actionTypes'
 
 //Type
 import { FileStateType } from '../types'
@@ -16,7 +16,7 @@ export default function fileReducer(
   action: AnyAction
 ) {
   switch (action.type) {
-    case actionTypes.ADD_FILE:
+    case ADD_FILE:
       return action.payload
     default:
       return state

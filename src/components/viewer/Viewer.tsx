@@ -6,17 +6,23 @@ import {
   PDFPageProxy,
 } from 'pdfjs-dist/types/src/display/api'
 
-import { useSelector } from 'react-redux'
+//Action types
+import { ENABLE_TOOLBAR, DISABLE_TOOLBAR } from '../../actionTypes'
+
+import { useSelector, useDispatch } from 'react-redux'
 import styles from './Viewer.module.css'
 import { RootState } from '../../reducers'
 
 //PDF VIEWER/LOADER
 import { Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack'
-// pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js'
+pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js'
 
 export default function Viewer() {
+  const dispatch = useDispatch()
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const file = useSelector((state: RootState) => state.file)
+  const toolbarEnabled = useSelector((state: RootState) => state.toolbar)
   const zoom: Number = useSelector((state: RootState) => state.zoom)
   const pageNum: number = useSelector((state: RootState) => state.page)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
@@ -34,6 +40,12 @@ export default function Viewer() {
   }, [file])
 
   useEffect(() => {
+    if (toolbarEnabled) {
+      //turning too soon may break render
+      dispatch({
+        type: DISABLE_TOOLBAR,
+      })
+    }
     renderPage()
   }, [pageNum, pdf])
 
@@ -65,7 +77,11 @@ export default function Viewer() {
         canvasContext: ctx,
         viewport,
       }
-      pageDoc.render(renderCtx).promise.then(() => console.log('rendered'))
+      pageDoc.render(renderCtx).promise.then(() =>
+        dispatch({
+          type: ENABLE_TOOLBAR,
+        })
+      )
     })
   }
 

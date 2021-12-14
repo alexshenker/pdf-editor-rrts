@@ -1,12 +1,13 @@
-import { combineReducers } from "redux";
+import { combineReducers } from 'redux'
 
-import fileReducer from "./fileReducer";
-import zoomReducer from "./zoomReducer";
-import pageReducer from "./pageReducer";
-
+import fileReducer from './fileReducer'
+import toolbarReducer from './toolbarReducer'
+import zoomReducer from './zoomReducer'
+import pageReducer from './pageReducer'
 
 const rootReducer = combineReducers({
   file: fileReducer,
+  toolbar: toolbarReducer,
   zoom: zoomReducer,
   page: pageReducer,
 })
