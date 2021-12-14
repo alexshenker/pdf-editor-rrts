@@ -1,6 +1,8 @@
-div {
-  overflow-x: scroll !important;
+.viewer {
+  display: flex;
+  justify-content: center;
 }
-.viewer canvas {
-  height: auto !important;
+
+.viewport canvas {
+  height: auto;
 }

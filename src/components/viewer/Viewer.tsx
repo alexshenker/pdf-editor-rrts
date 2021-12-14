@@ -1,18 +1,25 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+
+//pdfjs TYPES /** note: these are likely unsupported */
+import {
+  PDFDocumentProxy,
+  PDFPageProxy,
+} from 'pdfjs-dist/types/src/display/api'
+
 import { useSelector } from 'react-redux'
 import styles from './Viewer.module.css'
 import { RootState } from '../../reducers'
 
 //PDF VIEWER/LOADER
 import { Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack'
-pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js'
+// pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js'
 
 export default function Viewer() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  //A4 paper: w:2480px
-  const pageWidth = 2480
   const file = useSelector((state: RootState) => state.file)
   const zoom = useSelector((state: RootState) => state.zoom)
+  const page = useSelector((state: RootState) => state.page)
+  const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -21,15 +28,44 @@ export default function Viewer() {
   }, [zoom])
 
   useEffect(() => {
-    renderPdf()
+    if (file.pdf && canvasRef.current) {
+      renderPdf()
+    }
   }, [file])
 
-  const renderPdf = () => {
-    const doc = pdfjs.getDocument(file.pdf)
-    doc.promise.then((pdf) => {
-      pdf.getPage(1).then((page) => {
-        //https://stackoverflow.com/questions/15341010/render-pdf-to-single-canvas-using-pdf-js-and-imagedata
-      })
+  useEffect(() => {
+    renderPage()
+  }, [page, pdf])
+
+  const renderPdf = async () => {
+    const arrBuff = await file.pdf
+      .arrayBuffer()
+      .then((arrayBuffer: ArrayBuffer) => arrayBuffer)
+
+    const doc = pdfjs.getDocument(arrBuff)
+    doc.promise.then((pdfDoc) => {
+      //make pdf reusable for rendering pages
+      setPdf(pdfDoc)
+    })
+  }
+
+  const renderPage = () => {
+    if (!pdf) return
+    pdf.getPage(page).then(async (pageDoc: PDFPageProxy) => {
+      if (!canvasRef.current) return
+      const canvas = canvasRef.current
+      const ctx = canvas.getContext('2d')
+      //must check that ctx exists
+      if (!ctx || !(ctx instanceof CanvasRenderingContext2D)) return
+      //scale exaggerated for quality
+      const viewport = pageDoc.getViewport({ scale: 4 })
+      canvas.width = viewport.width
+      canvas.height = viewport.height
+      const renderCtx = {
+        canvasContext: ctx,
+        viewport,
+      }
+      pageDoc.render(renderCtx).promise.then(() => console.log('rendered'))
     })
   }
 
