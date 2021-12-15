@@ -7,6 +7,7 @@ import { FileStateType } from '../types'
 const initialState = {
   pdf: null,
   numPages: 0,
+  byteSize: 0,
   width: 0,
   height: 0,
 }

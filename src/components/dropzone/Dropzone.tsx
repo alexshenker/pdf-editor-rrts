@@ -13,19 +13,21 @@ export default function Dropzone() {
     if (!e.target.files || !e.target.files[0]) return
 
     const file = e.target.files[0]
-
     file.arrayBuffer().then(async (arrayBuffer) => {
       //creates a PDFDocument instance using arrayBuffer
       const pdfDocument = await PDFDocument.load(new Uint8Array(arrayBuffer))
-      const numPages = pdfDocument.getPageCount()
-      const page = pdfDocument.getPage(0)
-      const width = page.getMediaBox().width
-      const height = page.getMediaBox().height
+
+      const numPages = pdfDocument.getPageCount(),
+        page = pdfDocument.getPage(0),
+        byteSize = file.size,
+        width = page.getMediaBox().width,
+        height = page.getMediaBox().height
       dispatch({
         type: ADD_FILE,
         payload: {
           pdf: file,
           numPages,
+          byteSize,
           width,
           height,
         },

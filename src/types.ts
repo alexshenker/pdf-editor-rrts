@@ -3,6 +3,7 @@ import { ChangeEvent, InputHTMLAttributes } from 'react'
 export interface FileStateType {
   pdf: FileList | null
   numPages: number
+  byteSize: number
   width: number
   height: number
 }
