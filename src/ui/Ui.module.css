@@ -19,6 +19,8 @@
 
 .tool_input {
   font-size: var(--tool-font-size);
+  display: flex;
+  align-items: center;
 }
 
 .tool_input_input {
