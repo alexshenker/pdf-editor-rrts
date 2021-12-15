@@ -1,19 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, RefObject } from 'react'
 import styles from './Dropzone.module.css'
 import { useDispatch } from 'react-redux'
 import { ADD_FILE } from '../../actionTypes'
-
+//TESTING
+import Modal from '../../ui/Modal'
+import Error from '../../ui/Error'
+import Warning from '../../ui/Warning'
 //PDF LOADER
 import { PDFDocument } from 'pdf-lib'
 
-//UI
-import Warning from '../../ui/Warning'
-import Error from '../../ui/Error'
-
 export default function Dropzone() {
   const dispatch = useDispatch()
-  const [warning, setWarning] = useState<string | false>(false)
-  const [error, setError] = useState<string | false>(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+  //For Modal
+  const modalRef = useRef<HTMLDivElement>(null)
+  const [warning, setWarning] = useState<string | boolean>(false)
+  const [error, setError] = useState<string | boolean>(false)
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0]) return
 
@@ -23,8 +27,14 @@ export default function Dropzone() {
       const pdfDocument = await PDFDocument.load(new Uint8Array(arrayBuffer), {
         ignoreEncryption: true,
       })
+      //Check if encrypted
       if (pdfDocument.isEncrypted) {
-        return setError('This file is encrypted')
+        setIsModalOpen(true)
+        if (inputRef.current) {
+          //reset file input
+          inputRef.current.value = ''
+        }
+        return setError('This file is encrypted. Please try a different file.')
       }
 
       const numPages = pdfDocument.getPageCount(),
@@ -49,16 +59,24 @@ export default function Dropzone() {
     <div className={styles.dropzone}>
       <label className={styles.inputLabel} htmlFor="dropzone">
         <div className={styles.inputBox}>
-          {warning ? (
-            <Warning text={warning} />
-          ) : error ? (
-            <Error text={error} />
-          ) : (
-            <p>Drop or Select</p>
-          )}
+          <p>Drop or Select</p>
         </div>
       </label>
-      <input onChange={handleFile} id="dropzone" type="file" accept=".pdf" />
+      <input
+        ref={inputRef}
+        onChange={handleFile}
+        id="dropzone"
+        type="file"
+        accept=".pdf"
+      />
+      <Modal
+        modalRef={modalRef}
+        handleClose={() => setIsModalOpen(false)}
+        open={isModalOpen}
+        titleElement={error ? <Error /> : warning ? <Warning /> : <></>}
+      >
+        <div>{error ? <>{error}</> : warning ? <>{warning}</> : ''}</div>
+      </Modal>
     </div>
   )
 }

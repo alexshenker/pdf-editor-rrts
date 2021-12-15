@@ -1,4 +1,4 @@
-import { ChangeEvent, InputHTMLAttributes } from 'react'
+import { ChangeEvent, InputHTMLAttributes, RefObject } from 'react'
 
 export interface FileStateType {
   pdf: FileList | null
@@ -30,10 +30,13 @@ export interface ButtonProps {
   children?: JSX.Element
 }
 
-export interface WarningProps {
-  text: string
-}
+export type DivRef = RefObject<HTMLDivElement>
 
-export interface ErrorProps {
-  text: string
+export interface ModalProps {
+  open: boolean
+  handleClose(): void
+  titleElement?: JSX.Element
+  titleText?: string
+  children?: JSX.Element
+  modalRef?: DivRef
 }
