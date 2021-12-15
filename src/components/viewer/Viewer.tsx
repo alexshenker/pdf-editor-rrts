@@ -14,7 +14,7 @@ import styles from './Viewer.module.css'
 import { RootState } from '../../reducers'
 
 //PDF VIEWER/LOADER
-import { Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack'
+import { pdfjs } from 'react-pdf/dist/esm/entry.webpack'
 pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js'
 
 export default function Viewer() {
@@ -48,6 +48,8 @@ export default function Viewer() {
     }
     renderPage()
   }, [pageNum, pdf])
+
+  //FUNCTIONS
 
   const renderPdf = async () => {
     const arrBuff = await file.pdf
