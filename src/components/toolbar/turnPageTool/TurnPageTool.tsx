@@ -58,10 +58,10 @@ export default function TurnPageTool() {
   }, [pageNum])
   return (
     <div className={styles.turn_page_tool}>
-      <ToolBtn handleClick={pageDown} text="">
+      <ToolBtn handleClick={pageDown} description="">
         <VscTriangleLeft />
       </ToolBtn>
-      <ToolBtn handleClick={pageUp} text="">
+      <ToolBtn handleClick={pageUp} description="">
         <VscTriangleRight />
       </ToolBtn>
       <ToolInput

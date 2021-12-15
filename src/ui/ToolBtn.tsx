@@ -6,7 +6,7 @@ import styles from './Ui.module.css'
 import { ToolBtnProps } from '../types'
 import { RootState } from '../reducers'
 
-const ToolBtn: FC<ToolBtnProps> = ({ handleClick, text, children }) => {
+const ToolBtn: FC<ToolBtnProps> = ({ handleClick, description, children }) => {
   const enabled = useSelector((state: RootState) => state.toolbar)
   return (
     <button

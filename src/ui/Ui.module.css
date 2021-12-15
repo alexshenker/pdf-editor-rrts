@@ -1,12 +1,13 @@
 :root {
   --tool-btn-size: 18px;
   --tool-font-size: 14px;
+  --tool-btn-menu-padding: 5px;
 }
-
+/* BUTTON */
 .tool_btn {
   border: none;
   border-radius: 100%;
-  padding: 5px;
+  padding: var(--tool-btn-menu-padding);
 }
 .tool_btn .icon_container {
   width: var(--tool-btn-size);
@@ -16,15 +17,21 @@
   justify-content: center;
   align-items: center;
 }
-
+/* INPUT */
 .tool_input {
   font-size: var(--tool-font-size);
   display: flex;
   align-items: center;
+  white-space: nowrap;
 }
 
 .tool_input_input {
   width: 25px;
   text-align: right;
   font-size: var(--tool-font-size);
+}
+/* MENU */
+.tool_menu {
+  position: absolute;
+  padding: var(--tool-btn-menu-padding);
 }

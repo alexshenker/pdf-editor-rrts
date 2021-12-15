@@ -10,7 +10,7 @@ export interface FileStateType {
 
 export interface ToolBtnProps {
   handleClick(): void
-  text: string
+  description: string
   children: JSX.Element
 }
 
@@ -19,4 +19,21 @@ export interface ToolInputProps {
   value: string | number | readonly string[] | undefined
   suffix: string
   inputType: string
+}
+
+export interface ToolMenuProps {
+  children: JSX.Element
+}
+
+export interface ButtonProps {
+  text?: string
+  children?: JSX.Element
+}
+
+export interface WarningProps {
+  text: string
+}
+
+export interface ErrorProps {
+  text: string
 }

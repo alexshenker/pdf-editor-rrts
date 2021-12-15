@@ -58,10 +58,10 @@ export default function ZoomTool() {
 
   return (
     <div className={styles.zoom_tool}>
-      <ToolBtn handleClick={zoomOut} text="">
+      <ToolBtn handleClick={zoomOut} description="">
         <VscZoomOut />
       </ToolBtn>
-      <ToolBtn handleClick={zoomIn} text="">
+      <ToolBtn handleClick={zoomIn} description="">
         <VscZoomIn />
       </ToolBtn>
       <ToolInput

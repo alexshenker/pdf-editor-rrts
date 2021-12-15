@@ -5,4 +5,5 @@
 .toolbar {
   display: flex;
   font-size: var(--toolbar-font-size);
+  align-items: center;
 }

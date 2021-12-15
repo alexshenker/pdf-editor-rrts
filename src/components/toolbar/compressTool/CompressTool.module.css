@@ -1,0 +1,8 @@
+.compress_tool {
+  position: relative;
+}
+
+.menu_content p {
+  white-space: nowrap;
+  margin: 0;
+}
