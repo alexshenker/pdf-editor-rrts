@@ -15,11 +15,11 @@ const ToolInput: FC<ToolInputProps> = ({
   const enabled = useSelector((state: RootState) => state.toolbar)
 
   return (
-    <div>
+    <div className={styles.tool_input}>
       <input
         disabled={!enabled}
-        className={styles.input_tool}
         onChange={handleChange}
+        className={styles.tool_input_input}
         type={inputType}
         value={value}
       />

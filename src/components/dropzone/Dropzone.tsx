@@ -18,7 +18,7 @@ export default function Dropzone() {
       //creates a PDFDocument instance using arrayBuffer
       const pdfDocument = await PDFDocument.load(new Uint8Array(arrayBuffer))
       const numPages = pdfDocument.getPageCount()
-      const page = pdfDocument.getPage(1)
+      const page = pdfDocument.getPage(0)
       const width = page.getMediaBox().width
       const height = page.getMediaBox().height
       dispatch({
