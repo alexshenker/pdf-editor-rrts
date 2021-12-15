@@ -6,6 +6,10 @@ import { ADD_FILE } from '../../actionTypes'
 //PDF LOADER
 import { PDFDocument } from 'pdf-lib'
 
+//UI
+import Warning from '../../ui/Warning'
+import Error from '../../ui/Error'
+
 export default function Dropzone() {
   const dispatch = useDispatch()
   const [warning, setWarning] = useState<string | false>(false)
@@ -20,7 +24,7 @@ export default function Dropzone() {
         ignoreEncryption: true,
       })
       if (pdfDocument.isEncrypted) {
-        return setWarning('This file is encrypted')
+        return setError('This file is encrypted')
       }
 
       const numPages = pdfDocument.getPageCount(),
@@ -46,9 +50,9 @@ export default function Dropzone() {
       <label className={styles.inputLabel} htmlFor="dropzone">
         <div className={styles.inputBox}>
           {warning ? (
-            <p>{warning}</p>
+            <Warning text={warning} />
           ) : error ? (
-            <p>{error}</p>
+            <Error text={error} />
           ) : (
             <p>Drop or Select</p>
           )}

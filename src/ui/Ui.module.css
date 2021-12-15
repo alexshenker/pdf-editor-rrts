@@ -2,6 +2,7 @@
   --tool-btn-size: 18px;
   --tool-font-size: 14px;
   --tool-btn-menu-padding: 5px;
+  --warning-error-font-size: 14px;
 }
 /* BUTTON */
 .tool_btn {
@@ -34,4 +35,33 @@
 .tool_menu {
   position: absolute;
   padding: var(--tool-btn-menu-padding);
+}
+
+/* WARNING & ERROR */
+.Warning,
+.Error {
+  padding: 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.Warning p,
+.Error p {
+  margin: 0;
+}
+.Warning .Icon,
+.Error .Icon {
+  display: flex;
+  align-items: center;
+  /* needs to match line-height of text */
+  font-size: 23px;
+  margin-right: 5px;
+}
+
+.Warning {
+  background-color: rgba(220, 255, 106, 0.5);
+}
+.Error {
+  background-color: rgba(255, 36, 36, 0.5);
 }
