@@ -14,8 +14,14 @@ import styles from './Viewer.module.css'
 import { RootState } from '../../reducers'
 
 //PDF VIEWER/LOADER
-import { pdfjs } from 'react-pdf/dist/esm/entry.webpack'
-pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js'
+/**
+ * Originally used React-Pdf to access the pdfjs library
+ * Under the hood it utilizes pdfjs-dist so the benefit of using it outside of its components is not obvious to me.
+ */
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.js'
+//When loading using pdfjs-dist, we must set a globalworker for pdfjsLib
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js'
+//this worker was copied from pdfjs-dist
 
 export default function Viewer() {
   const dispatch = useDispatch()
@@ -56,8 +62,8 @@ export default function Viewer() {
       .arrayBuffer()
       .then((arrayBuffer: ArrayBuffer) => arrayBuffer)
 
-    const doc = pdfjs.getDocument(arrBuff)
-    doc.promise.then((pdfDoc) => {
+    const doc = pdfjsLib.getDocument(arrBuff)
+    doc.promise.then((pdfDoc: any) => {
       //make pdf reusable for rendering pages
       setPdf(pdfDoc)
     })
