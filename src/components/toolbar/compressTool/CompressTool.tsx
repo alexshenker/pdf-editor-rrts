@@ -23,6 +23,13 @@ import ToolBtn from '../../../ui/ToolBtn'
 import { CgCompressRight } from '@react-icons/all-files/cg/CgCompressRight'
 import ToolMenu from '../../../ui/ToolMenu'
 import Button from '../../../ui/Button'
+
+/**
+ * Unable to compress individual pages
+ * It appears that jsPDF significantly increases the file size upon conversion from jpeg to pdf.
+ * No clear solution yet
+ */
+
 /*
 - preview image (on viewer?)
 - preview size estimate
