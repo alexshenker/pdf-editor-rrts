@@ -1,11 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-//pdfjs TYPES /** note: these are likely unsupported */
-import {
-  PDFDocumentProxy,
-  PDFPageProxy,
-} from 'pdfjs-dist/types/src/display/api'
-
 //Action types
 import { ENABLE_TOOLBAR, DISABLE_TOOLBAR } from '../../actionTypes'
 
@@ -18,6 +12,13 @@ import { RootState } from '../../reducers'
  * Originally used React-Pdf to access the pdfjs library
  * Under the hood it utilizes pdfjs-dist so the benefit of using it outside of its components is not obvious to me.
  */
+//pdfjs-dist TYPES
+/** note: these are likely unmaintained */
+import {
+  PDFDocumentProxy,
+  PDFPageProxy,
+} from 'pdfjs-dist/types/src/display/api'
+//Only the legacy build can be included via import
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.js'
 //When loading using pdfjs-dist, we must set a globalworker for pdfjsLib
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js'

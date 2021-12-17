@@ -26,6 +26,7 @@ export interface ToolMenuProps {
 }
 
 export interface ButtonProps {
+  handleClick(): void
   text?: string
   children?: JSX.Element
 }
