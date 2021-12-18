@@ -23,8 +23,7 @@ import { PDFDocument } from 'pdf-lib'
 export default function SplitTool() {
   const [active, setActive] = useState(true)
   const [open, setOpen] = useState(false)
-
-  const [error, setError] = useState('')
+  const [error, setError] = useState<string | false>(false)
 
   const handleClose = () => {
     setOpen(false)
@@ -32,6 +31,14 @@ export default function SplitTool() {
 
   const numPages = useSelector((state: RootState) => state.file.numPages)
   const pdf = useSelector((state: RootState) => state.file.pdf)
+
+  //ERRORS
+  const errors = {
+    '>numPages': `You have provided a page number that is higher than the total number of pages. Please enter values that are no higher than ${numPages}.`,
+    'from>to':
+      'The value of "from" must not be greater than the value of "to".',
+    incomplete: 'Invalid range in custom input.',
+  }
 
   //INPUTS
   const [rangeType, setRangeType] = useState<'range' | 'custom'>('range')
@@ -46,7 +53,9 @@ export default function SplitTool() {
       if (rangeFrom === '' || rangeTo === '') return
       const start = Number(rangeFrom)
       const end = Number(rangeTo)
-      if (start > numPages || end > numPages) return
+      if (start > numPages || end > numPages)
+        return setError(errors['>numPages'])
+      if (start > end) return setError(errors['from>to'])
       const splitInfo: number[] = []
       for (let i = start; i <= end; i++) {
         splitInfo.push(i)
@@ -62,20 +71,21 @@ export default function SplitTool() {
         if (p.includes('-')) {
           const range = p.split('-')
           //validate: length of 'range' Array is 2
-          if (range.length !== 2) return
+          if (range.length !== 2) return setError(errors['incomplete'])
 
           const start = Number(range[0])
           const end = Number(range[1])
           //validate: start or end !> numPages
-          if (start > numPages || end > numPages) return
+          if (start > numPages || end > numPages)
+            return setError(errors['>numPages'])
           //validate: start <= end
-          if (start > end) return
+          if (start > end) return setError(errors['from>to'])
           for (let i = start; i <= end; i++) {
             splitInfo.push(i)
           }
         } else {
           //validate Number(p) <= numPages
-          if (Number(p) > numPages) return
+          if (Number(p) > numPages) return setError(errors['>numPages'])
           splitInfo.push(Number(p))
         }
       })
@@ -84,8 +94,11 @@ export default function SplitTool() {
   }
 
   useEffect(() => {
-    const splitInfo: number[] | undefined = splitters[rangeType]()
-    if (splitInfo) return setPagesToExtract(splitInfo)
+    setError(false)
+    const splitInfo = splitters[rangeType]()
+    if (splitInfo) {
+      return setPagesToExtract(splitInfo)
+    }
   }, [rangeType, rangeFrom, rangeTo, customInput])
 
   const handleType = (e: ChangeEvent<HTMLInputElement>) => {
@@ -155,6 +168,7 @@ export default function SplitTool() {
 
   const split = async () => {
     if (!pdf) return
+    if (error) return setOpen(true)
 
     const pdfDoc = await createDoc()
     const newDoc = await PDFDocument.create()
@@ -227,7 +241,7 @@ export default function SplitTool() {
                 value={customInput}
                 type="text"
                 name="split_custom"
-                placeholder="Ex: 3, 6-8, 12, 13"
+                placeholder="Ex: 3,6-8,12,13"
               />
             </div>
           )}
