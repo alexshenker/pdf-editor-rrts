@@ -95,6 +95,34 @@ export default function SplitTool() {
     }
   }
 
+  const isNum = (val: string) => val.match(/^[0-9]+$/)
+  const isDashValid = (str: string, idx: number) => {
+    for (let i = idx - 2; i >= 0; i--) {
+      if (str[i] === '-') return false
+      if (str[i] === ',') return true
+    }
+    return true
+  }
+
+  const isCustomValid = (str: string, lastChar: string) => {
+    if (isNum(lastChar)) return true
+    if (lastChar === ' ') return false
+    if (str.length <= 1) {
+      //1st char is number. No char means empty str
+      return str.length === 1 ? isNum(lastChar) : str === ''
+    }
+    const prevChar = str.charAt(str.length - 2)
+    if (lastChar === '-') {
+      return isNum(prevChar) && isDashValid(str, str.length)
+    }
+    if (lastChar === ',') {
+      return isNum(prevChar)
+    }
+    if (prevChar === '-' || prevChar === ',') {
+      return isNum(lastChar)
+    }
+  }
+
   const handleChange = (
     type: 'start' | 'end' | 'custom',
     e: ChangeEvent<HTMLInputElement>
@@ -103,22 +131,11 @@ export default function SplitTool() {
     const lastChar = val.charAt(val.length - 1)
     switch (type) {
       case 'start':
-        if (lastChar.match(/^[0-9]+$/) != null || lastChar === '')
-          return setRangeFrom(val)
-        return
+        return isNum(lastChar) || lastChar === '' ? setRangeFrom(val) : null
       case 'end':
-        if (lastChar.match(/^[0-9]+$/) != null || lastChar === '')
-          return setRangeTo(val)
-        return
+        return isNum(lastChar) || lastChar === '' ? setRangeTo(val) : null
       case 'custom':
-        if (
-          lastChar.match(/^[0-9]+$/) ||
-          lastChar === ',' ||
-          lastChar === '-' ||
-          lastChar === ''
-        )
-          return setCustomInput(val)
-        return
+        return isCustomValid(val, lastChar) ? setCustomInput(val) : null
       default:
         return
     }
