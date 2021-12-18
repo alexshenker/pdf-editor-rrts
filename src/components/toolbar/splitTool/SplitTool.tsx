@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react'
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 
 //REDUX
 import { useSelector } from 'react-redux'
@@ -35,9 +35,58 @@ export default function SplitTool() {
 
   //INPUTS
   const [rangeType, setRangeType] = useState<'range' | 'custom'>('range')
-  const [rangeStart, setRangeStart] = useState('')
-  const [rangeEnd, setRangeEnd] = useState('')
+  const [rangeFrom, setRangeFrom] = useState('')
+  const [rangeTo, setRangeTo] = useState('')
   const [customInput, setCustomInput] = useState('')
+
+  const [pagesToExtract, setPagesToExtract] = useState<number[]>([])
+
+  const splitters = {
+    range() {
+      if (rangeFrom === '' || rangeTo === '') return
+      const start = Number(rangeFrom)
+      const end = Number(rangeTo)
+      if (start > numPages || end > numPages) return
+      const splitInfo: number[] = []
+      for (let i = start; i <= end; i++) {
+        splitInfo.push(i)
+      }
+      return splitInfo
+    },
+    custom() {
+      if (customInput === '') return
+      const inputArray = customInput.split(',')
+      const splitInfo: number[] = []
+
+      inputArray.forEach((p) => {
+        if (p.includes('-')) {
+          const range = p.split('-')
+          //validate: length of 'range' Array is 2
+          if (range.length !== 2) return
+
+          const start = Number(range[0])
+          const end = Number(range[1])
+          //validate: start or end !> numPages
+          if (start > numPages || end > numPages) return
+          //validate: start <= end
+          if (start > end) return
+          for (let i = start; i <= end; i++) {
+            splitInfo.push(i)
+          }
+        } else {
+          //validate Number(p) <= numPages
+          if (Number(p) > numPages) return
+          splitInfo.push(Number(p))
+        }
+      })
+      return splitInfo
+    },
+  }
+
+  useEffect(() => {
+    const splitInfo: number[] | undefined = splitters[rangeType]()
+    if (splitInfo) return setPagesToExtract(splitInfo)
+  }, [rangeType, rangeFrom, rangeTo, customInput])
 
   const handleType = (e: ChangeEvent<HTMLInputElement>) => {
     const type = e.target.value
@@ -54,14 +103,12 @@ export default function SplitTool() {
     const lastChar = val.charAt(val.length - 1)
     switch (type) {
       case 'start':
-        if (lastChar.match(/^[0-9]+$/) != null || lastChar === '') {
-          return setRangeStart(val)
-        }
+        if (lastChar.match(/^[0-9]+$/) != null || lastChar === '')
+          return setRangeFrom(val)
         return
       case 'end':
-        if (lastChar.match(/^[0-9]+$/) != null || lastChar === '') {
-          return setRangeEnd(val)
-        }
+        if (lastChar.match(/^[0-9]+$/) != null || lastChar === '')
+          return setRangeTo(val)
         return
       case 'custom':
         if (
@@ -69,9 +116,8 @@ export default function SplitTool() {
           lastChar === ',' ||
           lastChar === '-' ||
           lastChar === ''
-        ) {
+        )
           return setCustomInput(val)
-        }
         return
       default:
         return
@@ -91,97 +137,26 @@ export default function SplitTool() {
   }
 
   const split = async () => {
-    if (pdf) {
-      const newDocument =
-        rangeType === 'range' ? await rangeSplit() : await customSplit()
+    if (!pdf) return
 
-      if (newDocument && newDocument instanceof PDFDocument) {
-        const uInt8Array = await newDocument.save({ addDefaultPage: false })
-        return autoDownload(uInt8Array)
-      }
-    } else {
-      return
-    }
-  }
-
-  const rangeSplit = async () => {
-    const start = Number(rangeStart)
-    const end = Number(rangeEnd)
-
-    if (start > end) {
-      setError('Starting number cannot be greater than the ending number')
-      return setOpen(true)
-    }
-
-    if (end > numPages) {
-      setError(`The highest page number you can enter is ${numPages}`)
-      setRangeEnd(`${numPages}`)
-      return setOpen(true)
-    }
-    //range split
-    //remove pages that are before and after range
     const pdfDoc = await createDoc()
-
-    const performRangeSplit = async () => {
-      const newDoc = await PDFDocument.create()
-
-      for (let i = start; i <= end; i++) {
-        const [newPage] = await newDoc.copyPages(pdfDoc, [i - 1])
+    const newDoc = await PDFDocument.create()
+    const createSplitDoc = async () => {
+      for (let i = 0; i < pagesToExtract.length; i++) {
+        const [newPage] = await newDoc.copyPages(pdfDoc, [
+          pagesToExtract[i] - 1,
+        ])
         newDoc.addPage(newPage)
       }
       return newDoc
     }
-    const newDocument = await performRangeSplit()
-    return newDocument
-  }
 
-  const customSplit = async () => {
-    const pdfDoc = await createDoc()
-
-    const performCustomSplit = async () => {
-      const newDoc = await PDFDocument.create()
-      const inputArray = customInput.split(',')
-
-      const pagesToCopy: number[] = []
-      inputArray.forEach((p) => {
-        if (p.includes('-')) {
-          const range = p.split('-')
-          if (range.length !== 2) {
-            setError(
-              'Incorrect range value provided. The custom input ranges should be two numbers separated by a dash. Ex: 1-8'
-            )
-            return setOpen(true)
-          }
-          const rangeS = Number(range[0])
-          const rangeE = Number(range[1])
-          if (rangeE > numPages || rangeS > numPages) {
-            setError(`The highest page number you can enter is ${numPages}`)
-            return setOpen(true)
-          }
-          if (rangeS > rangeE) {
-            setError('Starting number cannot be greater than the ending number')
-            return setOpen(true)
-          }
-          for (let i = rangeS; i <= rangeE; i++) {
-            pagesToCopy.push(i - 1)
-          }
-        } else {
-          if (Number(p) > numPages) {
-            setError(`The highest page number you can enter is ${numPages}`)
-            return setOpen(true)
-          }
-          pagesToCopy.push(Number(p) - 1)
-        }
-      })
-
-      for (let i = 0; i < pagesToCopy.length; i++) {
-        const [newPage] = await newDoc.copyPages(pdfDoc, [pagesToCopy[i]])
-        newDoc.addPage(newPage)
-      }
-      return newDoc
+    const splitDoc = await createSplitDoc()
+    if (splitDoc && splitDoc instanceof PDFDocument) {
+      const uInt8Array = await splitDoc.save({ addDefaultPage: false })
+      return autoDownload(uInt8Array)
     }
-    const newDocument = await performCustomSplit()
-    return newDocument
+    return
   }
 
   return (
@@ -212,7 +187,7 @@ export default function SplitTool() {
               <label htmlFor="split_range_from">From</label>
               <input
                 onChange={(e) => handleChange('start', e)}
-                value={rangeStart}
+                value={rangeFrom}
                 type="text"
                 name="split_range_from"
                 placeholder="1"
@@ -221,7 +196,7 @@ export default function SplitTool() {
               <label htmlFor="split_range_to">To</label>
               <input
                 onChange={(e) => handleChange('end', e)}
-                value={rangeEnd}
+                value={rangeTo}
                 type="text"
                 name="split_range_to"
                 placeholder={numPages}
