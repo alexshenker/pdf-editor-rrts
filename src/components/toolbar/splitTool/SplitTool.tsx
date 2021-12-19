@@ -1,5 +1,6 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
-
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
+//REACT TYPES
+import { ChangeEvent } from 'react'
 //REDUX
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -21,8 +22,11 @@ import { RootState } from '../../../reducers'
 
 //PDF LIBRARY
 import { PDFDocument } from 'pdf-lib'
+//HELPERS
+import { rangeSplitter, customSplitter, isNum, isCustomValid } from './helpers'
 
 export default function SplitTool() {
+  //STATE
   const [active, setActive] = useState(true)
   const [open, setOpen] = useState(false)
   const [error, setError] = useState<string | false>(false)
@@ -30,20 +34,10 @@ export default function SplitTool() {
   const handleClose = () => {
     setOpen(false)
   }
-
+  //REDUX
   const numPages = useSelector((state: RootState) => state.file.numPages)
   const pdf = useSelector((state: RootState) => state.file.pdf)
-  const createPreviewLoading = useSelector(
-    (state: RootState) => state.split.createPreviewLoading
-  )
   const dispatch = useDispatch()
-  //ERRORS
-  const errors = {
-    '>numPages': `You have provided a page number that is higher than the total number of pages. Please enter values that are no higher than ${numPages}.`,
-    'from>to':
-      'The value of "from" must not be greater than the value of "to".',
-    incomplete: 'Invalid range in custom input.',
-  }
 
   //INPUTS
   const [rangeType, setRangeType] = useState<'range' | 'custom'>('range')
@@ -53,109 +47,75 @@ export default function SplitTool() {
 
   const [pagesToExtract, setPagesToExtract] = useState<number[]>([])
 
-  const splitters = {
-    range() {
-      if (rangeFrom === '' || rangeTo === '') return
-      const start = Number(rangeFrom)
-      const end = Number(rangeTo)
-      if (start > numPages || end > numPages)
-        return setError(errors['>numPages'])
-      if (start > end) return setError(errors['from>to'])
-      const splitInfo: number[] = []
-      for (let i = start; i <= end; i++) {
-        splitInfo.push(i)
-      }
-      return splitInfo
-    },
-    custom() {
-      if (customInput === '' || !isNum(customInput[customInput.length - 1]))
-        return
-      const inputArray = customInput.split(',')
-
-      const splitInfo: number[] = []
-
-      inputArray.forEach((p) => {
-        if (p.includes('-')) {
-          const range = p.split('-')
-          //validate: length of 'range' Array is 2
-          if (range.length !== 2) return setError(errors['incomplete'])
-
-          const start = Number(range[0])
-          const end = Number(range[1])
-          //validate: start or end !> numPages
-          if (start > numPages || end > numPages)
-            return setError(errors['>numPages'])
-          //validate: start <= end
-          if (start > end) return setError(errors['from>to'])
-          for (let i = start; i <= end; i++) {
-            splitInfo.push(i)
-          }
-        } else {
-          //validate Number(p) <= numPages
-          if (Number(p) > numPages) return setError(errors['>numPages'])
-          splitInfo.push(Number(p))
-        }
-      })
-      return splitInfo
-    },
-  }
+  const errorReset = useCallback(() => {
+    if (error) setError(false)
+  }, [error])
+  const getError = useCallback(() => {
+    return error ? true : false
+  }, [error])
+  const createErrors = useCallback(() => {
+    //ERRORS
+    const errors = {
+      '>numPages': `You have provided a page number that is higher than the total number of pages. Please enter values that are no higher than ${numPages}.`,
+      'from>to':
+        'The value of "from" must not be greater than the value of "to".',
+      incomplete: 'Invalid range in custom input.',
+    }
+    return errors
+  }, [numPages])
+  //MEMO
+  const splitInfo = useMemo(() => {
+    errorReset()
+    if (rangeType === 'range') {
+      const info = rangeSplitter(
+        rangeFrom,
+        rangeTo,
+        numPages,
+        setError,
+        createErrors()
+      )
+      return getError() ? null : info
+    }
+    if (rangeType === 'custom') {
+      const info = customSplitter(
+        customInput,
+        numPages,
+        setError,
+        createErrors()
+      )
+      return getError() ? null : info
+    }
+  }, [
+    rangeFrom,
+    rangeTo,
+    numPages,
+    customInput,
+    rangeType,
+    errorReset,
+    getError,
+    createErrors,
+  ])
 
   useEffect(() => {
-    setError(false)
-
-    const splitInfo = splitters[rangeType]()
-    if (splitInfo && !error) {
+    if (splitInfo && splitInfo.length > 0) {
       return setPagesToExtract(splitInfo)
     }
-  }, [rangeType, rangeFrom, rangeTo, customInput])
+  }, [splitInfo])
 
   useEffect(() => {
     if (isNaN(pagesToExtract[pagesToExtract.length - 1])) return
-    if (!error && pagesToExtract.length > 0 && pagesToExtract) {
+    if (!getError() && pagesToExtract.length > 0 && pagesToExtract) {
       dispatch({
         type: CREATE_SPLIT_PREVIEW,
         payload: pagesToExtract,
       })
     }
-  }, [pagesToExtract])
+  }, [pagesToExtract, dispatch, getError])
 
   const handleType = (e: ChangeEvent<HTMLInputElement>) => {
     const type = e.target.value
     if (type === 'range' || type === 'custom') {
       setRangeType(type)
-    }
-  }
-
-  const isNum = (val: string) => val.match(/^[0-9]+$/)
-  const isDashValid = (str: string, idx: number) => {
-    for (let i = idx - 2; i >= 0; i--) {
-      if (str[i] === '-') return false
-      if (str[i] === ',') return true
-    }
-    return true
-  }
-
-  const isCustomValid = (str: string, lastChar: string) => {
-    if (lastChar === ' ') return false
-    if (str.length <= 1) {
-      //1st char is number. No char means empty str
-      return str.length === 1 ? isNum(lastChar) : str === ''
-    }
-    const prevChar = str.charAt(str.length - 2)
-    if (isNum(lastChar)) {
-      if (lastChar === '0') {
-        return prevChar !== ','
-      }
-      return true
-    }
-    if (lastChar === '-') {
-      return isNum(prevChar) && isDashValid(str, str.length)
-    }
-    if (lastChar === ',') {
-      return isNum(prevChar)
-    }
-    if (prevChar === '-' || prevChar === ',') {
-      return isNum(lastChar)
     }
   }
 

@@ -1,7 +1,7 @@
 import { ChangeEvent, InputHTMLAttributes, RefObject } from 'react'
 
 export interface FileStateType {
-  pdf: FileList | null
+  pdf: File | null
   numPages: number
   byteSize: number
   width: number

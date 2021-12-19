@@ -29,7 +29,6 @@ export default function Viewer() {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const file = useSelector((state: RootState) => state.file)
-  const toolbarEnabled = useSelector((state: RootState) => state.toolbar)
   const zoom: Number = useSelector((state: RootState) => state.zoom)
   const pageNum: number = useSelector((state: RootState) => state.page)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
@@ -42,57 +41,52 @@ export default function Viewer() {
 
   useEffect(() => {
     if (file.pdf && canvasRef.current) {
+      const renderPdf = async () => {
+        const arrBuff = await file.pdf
+          .arrayBuffer()
+          .then((arrayBuffer: ArrayBuffer) => arrayBuffer)
+
+        const doc = pdfjsLib.getDocument(arrBuff)
+        doc.promise.then((pdfDoc: any) => {
+          //make pdf reusable for rendering pages
+          setPdf(pdfDoc)
+        })
+      }
+
       renderPdf()
     }
   }, [file])
 
   useEffect(() => {
-    if (toolbarEnabled) {
-      //turning too soon may break render
-      dispatch({
-        type: DISABLE_TOOLBAR,
+    //turning too soon may break render
+    dispatch({
+      type: DISABLE_TOOLBAR,
+    })
+    const renderPage = () => {
+      if (!pdf) return
+      pdf.getPage(pageNum).then(async (pageDoc: PDFPageProxy) => {
+        if (!canvasRef.current) return
+        const canvas = canvasRef.current
+        const ctx = canvas.getContext('2d')
+        //must check that ctx exists
+        if (!ctx || !(ctx instanceof CanvasRenderingContext2D)) return
+        //scale exaggerated for quality
+        const viewport = pageDoc.getViewport({ scale: 4 })
+        canvas.width = viewport.width
+        canvas.height = viewport.height
+        const renderCtx = {
+          canvasContext: ctx,
+          viewport,
+        }
+        pageDoc.render(renderCtx).promise.then(() =>
+          dispatch({
+            type: ENABLE_TOOLBAR,
+          })
+        )
       })
     }
     renderPage()
-  }, [pageNum, pdf])
-
-  //FUNCTIONS
-
-  const renderPdf = async () => {
-    const arrBuff = await file.pdf
-      .arrayBuffer()
-      .then((arrayBuffer: ArrayBuffer) => arrayBuffer)
-
-    const doc = pdfjsLib.getDocument(arrBuff)
-    doc.promise.then((pdfDoc: any) => {
-      //make pdf reusable for rendering pages
-      setPdf(pdfDoc)
-    })
-  }
-
-  const renderPage = () => {
-    if (!pdf) return
-    pdf.getPage(pageNum).then(async (pageDoc: PDFPageProxy) => {
-      if (!canvasRef.current) return
-      const canvas = canvasRef.current
-      const ctx = canvas.getContext('2d')
-      //must check that ctx exists
-      if (!ctx || !(ctx instanceof CanvasRenderingContext2D)) return
-      //scale exaggerated for quality
-      const viewport = pageDoc.getViewport({ scale: 4 })
-      canvas.width = viewport.width
-      canvas.height = viewport.height
-      const renderCtx = {
-        canvasContext: ctx,
-        viewport,
-      }
-      pageDoc.render(renderCtx).promise.then(() =>
-        dispatch({
-          type: ENABLE_TOOLBAR,
-        })
-      )
-    })
-  }
+  }, [pageNum, pdf, dispatch])
 
   return (
     <div className={styles.viewer}>

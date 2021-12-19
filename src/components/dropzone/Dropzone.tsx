@@ -1,11 +1,11 @@
-import React, { useState, useRef, RefObject } from 'react'
+import React, { useState, useRef } from 'react'
 import styles from './Dropzone.module.css'
 import { useDispatch } from 'react-redux'
 import { ADD_FILE } from '../../actionTypes'
 //TESTING
 import Modal from '../../ui/Modal'
 import Error from '../../ui/Error'
-import Warning from '../../ui/Warning'
+
 //PDF LOADER
 import { PDFDocument } from 'pdf-lib'
 
@@ -14,7 +14,6 @@ export default function Dropzone() {
   const inputRef = useRef<HTMLInputElement>(null)
   //For Modal
   const modalRef = useRef<HTMLDivElement>(null)
-  const [warning, setWarning] = useState<string | boolean>(false)
   const [error, setError] = useState<string | boolean>(false)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
@@ -73,9 +72,9 @@ export default function Dropzone() {
         modalRef={modalRef}
         handleClose={() => setIsModalOpen(false)}
         open={isModalOpen}
-        titleElement={error ? <Error /> : warning ? <Warning /> : <></>}
+        titleElement={error ? <Error /> : <></>}
       >
-        <div>{error ? <>{error}</> : warning ? <>{warning}</> : ''}</div>
+        <div>{error ? <>{error}</> : ''}</div>
       </Modal>
     </div>
   )
