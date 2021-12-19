@@ -21,6 +21,25 @@ export interface ToolInputProps {
   inputType: string
 }
 
+export interface InputProps {
+  handleChange(...args: any[]): void
+  value: string | number | readonly string[] | undefined
+  inputType: string
+  labelFor?: string
+  labelText?: string
+  suffix?: string | null
+  placeholder?: string
+  inputWidth?: string
+}
+
+export interface RadioInputProps {
+  handleChange(...args: any[]): void
+  labelFor: string
+  labelText?: string
+  checked: boolean
+  name: string
+}
+
 export interface ToolMenuProps {
   children: JSX.Element
 }

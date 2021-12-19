@@ -14,6 +14,8 @@ import ToolBtn from '../../../ui/ToolBtn'
 import Button from '../../../ui/Button'
 import Modal from '../../../ui/Modal'
 import Error from '../../../ui/Error'
+import Input from '../../../ui/Input'
+import RadioInput from '../../../ui/RadioInput'
 //ICONS
 import { GiSplitArrows } from '@react-icons/all-files/gi/GiSplitArrows'
 import { RootState } from '../../../reducers'
@@ -193,53 +195,51 @@ export default function SplitTool() {
       </ToolBtn>
       <ToolMenu>
         <div className={styles.menu_content}>
-          <div>
-            <label htmlFor="range">Range</label>
-            <input
-              type="radio"
+          <div className={styles.menu_rangetype}>
+            <RadioInput
               name="rangeType"
-              value="range"
-              onChange={handleType}
+              labelFor="range"
+              handleChange={handleType}
+              labelText="Range"
               checked={rangeType === 'range'}
             />
-            <label htmlFor="custom">Custom</label>
-            <input
-              type="radio"
+            <RadioInput
               name="rangeType"
-              value="custom"
-              onChange={handleType}
+              labelFor="custom"
+              handleChange={handleType}
+              labelText="Custom"
               checked={rangeType === 'custom'}
             />
           </div>
           {rangeType === 'range' ? (
-            <div>
-              <label htmlFor="split_range_from">From</label>
-              <input
-                onChange={(e) => handleChange('start', e)}
+            <div className={styles.menu_inputs}>
+              <Input
+                handleChange={(e) => handleChange('start', e)}
                 value={rangeFrom}
-                type="text"
-                name="split_range_from"
+                inputType="text"
+                labelFor="split_range_from"
+                labelText="From"
                 placeholder="1"
               />
-
-              <label htmlFor="split_range_to">To</label>
-              <input
-                onChange={(e) => handleChange('end', e)}
+              <Input
+                handleChange={(e) => handleChange('end', e)}
                 value={rangeTo}
-                type="text"
-                name="split_range_to"
+                inputType="text"
+                labelText="To"
+                labelFor="split_range_to"
                 placeholder={numPages}
               />
             </div>
           ) : (
             <div>
-              <label htmlFor="split_custom">Custom</label>
-              <input
-                onChange={(e) => handleChange('custom', e)}
+              <Input
+                handleChange={(e) => handleChange('custom', e)}
                 value={customInput}
-                type="text"
-                name="split_custom"
+                inputType="text"
+                labelFor="split_custom"
+                labelText="Custom"
                 placeholder="Ex: 3,6-8,12,13"
+                inputWidth="100%"
               />
             </div>
           )}

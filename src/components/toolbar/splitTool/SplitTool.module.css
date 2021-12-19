@@ -1,1 +1,6 @@
-
+.menu_rangetype {
+  display: flex;
+}
+.menu_inputs {
+  display: flex;
+}

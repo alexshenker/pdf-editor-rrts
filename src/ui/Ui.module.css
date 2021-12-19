@@ -1,15 +1,21 @@
 :root {
   --tool-btn-size: 18px;
   --tool-font-size: 14px;
-  --tool-btn-menu-padding: 5px;
+  --tool-btn-padding: 5px;
   --warning-error-font-size: 14px;
   --tool-modal-padding: 10px;
+  --tool-menu-padding: 8px;
 }
 /* BUTTON */
+.Button {
+  margin-top: var(--tool-btn-padding);
+  margin-bottom: var(--tool-btn-padding);
+}
+
 .tool_btn {
   border: none;
   border-radius: 100%;
-  padding: var(--tool-btn-menu-padding);
+  padding: var(--tool-btn-padding);
 }
 .tool_btn .icon_container {
   width: var(--tool-btn-size);
@@ -32,10 +38,32 @@
   text-align: right;
   font-size: var(--tool-font-size);
 }
+
+/* RADIO INPUT */
+.radio_input {
+  padding: var(--tool-btn-padding);
+  display: flex;
+}
+.radio_input label {
+  margin-right: var(--tool-btn-padding);
+}
+
+.Input {
+  padding: var(--tool-btn-padding);
+  display: flex;
+  align-items: center;
+}
+.Input label {
+  margin-right: var(--tool-btn-padding);
+}
+
 /* MENU */
 .tool_menu {
   position: absolute;
-  padding: var(--tool-btn-menu-padding);
+  padding: var(--tool-menu-padding);
+  background-color: white;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
 }
 
 /* WARNING & ERROR */
