@@ -28,7 +28,7 @@ export default function Viewer() {
   const dispatch = useDispatch()
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const file = useSelector((state: RootState) => state.file)
+  const filePdf = useSelector((state: RootState) => state.file.pdf)
   const zoom: Number = useSelector((state: RootState) => state.zoom)
   const pageNum: number = useSelector((state: RootState) => state.page)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
@@ -40,11 +40,11 @@ export default function Viewer() {
   }, [zoom])
 
   useEffect(() => {
-    if (file.pdf && canvasRef.current) {
+    if (filePdf && canvasRef.current && filePdf instanceof File) {
       const renderPdf = async () => {
-        const arrBuff = await file.pdf
+        const arrBuff = await filePdf
           .arrayBuffer()
-          .then((arrayBuffer: ArrayBuffer) => arrayBuffer)
+          .then((arrayBuffer: ArrayBuffer) => new Uint8Array(arrayBuffer))
 
         const doc = pdfjsLib.getDocument(arrBuff)
         doc.promise.then((pdfDoc: any) => {
@@ -55,7 +55,7 @@ export default function Viewer() {
 
       renderPdf()
     }
-  }, [file])
+  }, [filePdf])
 
   useEffect(() => {
     //turning too soon may break render

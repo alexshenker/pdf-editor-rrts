@@ -1,4 +1,3 @@
-import { JsxElement } from 'typescript'
 import { AnyAction } from 'redux'
 
 const initialState: { width: number } = {

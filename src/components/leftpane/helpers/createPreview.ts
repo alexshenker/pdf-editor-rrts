@@ -17,6 +17,7 @@ export async function createPreview(
   canvasRef: RefObject<HTMLCanvasElement>,
   leftpaneWidth: number
 ) {
+  if (!pdf || !(pdf instanceof File)) return
   const uInt8Array: Uint8Array = await createUint8Array(pdf)
   const doc = await pdfjsLib.getDocument(uInt8Array).promise.then((doc) => doc)
 

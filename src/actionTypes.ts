@@ -1,4 +1,5 @@
 export const ADD_FILE = 'ADD_FILE'
+export const SET_EDITED_FILE = 'SET_EDITED_FILE'
 
 export const ENABLE_TOOLBAR = 'ENABLE_TOOLBAR'
 export const DISABLE_TOOLBAR = 'DISABLE_TOOLBAR'

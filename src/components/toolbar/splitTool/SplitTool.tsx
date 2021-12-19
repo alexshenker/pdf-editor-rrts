@@ -5,9 +5,9 @@ import { ChangeEvent } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 //HELPER
-import { autoDownload } from '../../../helpers/autoDownload'
+import { autoDownload } from '../../../global_helpers/autoDownload'
 //ACTION TYPES
-import { CREATE_SPLIT_PREVIEW } from '../../../actionTypes'
+import { CREATE_SPLIT_PREVIEW, SET_EDITED_FILE } from '../../../actionTypes'
 
 import styles from './SplitTool.module.css'
 //UI
@@ -37,6 +37,7 @@ export default function SplitTool() {
   //REDUX
   const numPages = useSelector((state: RootState) => state.file.numPages)
   const pdf = useSelector((state: RootState) => state.file.pdf)
+  const fileTitle = useSelector((state: RootState) => state.file.title)
   const dispatch = useDispatch()
 
   //INPUTS
@@ -168,7 +169,21 @@ export default function SplitTool() {
     const splitDoc = await createSplitDoc()
     if (splitDoc && splitDoc instanceof PDFDocument) {
       const uInt8Array = await splitDoc.save({ addDefaultPage: false })
-      return autoDownload(uInt8Array)
+      const newFile = new File([uInt8Array], fileTitle, {
+        type: 'application/pdf',
+      })
+
+      const numPages = pagesToExtract.length,
+        byteSize = newFile.size
+
+      dispatch({
+        type: SET_EDITED_FILE,
+        payload: {
+          pdf: newFile,
+          numPages,
+          byteSize,
+        },
+      })
     }
     return
   }

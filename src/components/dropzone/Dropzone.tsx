@@ -38,6 +38,7 @@ export default function Dropzone() {
 
       const numPages = pdfDocument.getPageCount(),
         page = pdfDocument.getPage(0),
+        title = pdfDocument.getTitle,
         byteSize = file.size,
         width = page.getMediaBox().width,
         height = page.getMediaBox().height
@@ -45,6 +46,7 @@ export default function Dropzone() {
         type: ADD_FILE,
         payload: {
           pdf: file,
+          title,
           numPages,
           byteSize,
           width,
