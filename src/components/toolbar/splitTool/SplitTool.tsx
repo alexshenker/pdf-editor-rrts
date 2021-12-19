@@ -4,8 +4,6 @@ import { ChangeEvent } from 'react'
 //REDUX
 import { useSelector, useDispatch } from 'react-redux'
 
-//HELPER
-import { autoDownload } from '../../../global_helpers/autoDownload'
 //ACTION TYPES
 import { CREATE_SPLIT_PREVIEW, SET_EDITED_FILE } from '../../../actionTypes'
 

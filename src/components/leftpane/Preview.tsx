@@ -1,13 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../../reducers'
 
 import styles from './LeftPane.module.css'
 
 //HELPERS
 import { createPreview } from './helpers'
+import { OPEN_LEFT_PANE } from '../../actionTypes'
 
 export default function Preview() {
+  const dispatch = useDispatch()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const splitInfo: number[] = useSelector(
     (state: RootState) => state.split.splitInfo
@@ -23,12 +25,15 @@ export default function Preview() {
     setIsLoading(true)
     ;(async () => {
       const urls = await createPreview(pdf, splitInfo, canvasRef, leftpaneWidth)
-      if (urls && urls.length) {
+      if (urls && urls.length > 0) {
         setJpgUrls(urls)
+        dispatch({
+          type: OPEN_LEFT_PANE,
+        })
         return setIsLoading(false)
       }
     })()
-  }, [splitInfo, leftpaneWidth, pdf])
+  }, [splitInfo, leftpaneWidth, pdf, dispatch])
 
   return (
     <div className={styles.preview}>
