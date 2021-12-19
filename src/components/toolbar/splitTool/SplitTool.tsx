@@ -1,10 +1,12 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react'
 
 //REDUX
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 //HELPER
 import { autoDownload } from '../../../helpers/autoDownload'
+//ACTION TYPES
+import { CREATE_SPLIT_PREVIEW } from '../../../actionTypes'
 
 import styles from './SplitTool.module.css'
 //UI
@@ -31,7 +33,10 @@ export default function SplitTool() {
 
   const numPages = useSelector((state: RootState) => state.file.numPages)
   const pdf = useSelector((state: RootState) => state.file.pdf)
-
+  const createPreviewLoading = useSelector(
+    (state: RootState) => state.split.createPreviewLoading
+  )
+  const dispatch = useDispatch()
   //ERRORS
   const errors = {
     '>numPages': `You have provided a page number that is higher than the total number of pages. Please enter values that are no higher than ${numPages}.`,
@@ -63,8 +68,10 @@ export default function SplitTool() {
       return splitInfo
     },
     custom() {
-      if (customInput === '') return
+      if (customInput === '' || !isNum(customInput[customInput.length - 1]))
+        return
       const inputArray = customInput.split(',')
+
       const splitInfo: number[] = []
 
       inputArray.forEach((p) => {
@@ -95,11 +102,22 @@ export default function SplitTool() {
 
   useEffect(() => {
     setError(false)
+
     const splitInfo = splitters[rangeType]()
-    if (splitInfo) {
+    if (splitInfo && !error) {
       return setPagesToExtract(splitInfo)
     }
   }, [rangeType, rangeFrom, rangeTo, customInput])
+
+  useEffect(() => {
+    if (isNaN(pagesToExtract[pagesToExtract.length - 1])) return
+    if (!error && pagesToExtract.length > 0 && pagesToExtract) {
+      dispatch({
+        type: CREATE_SPLIT_PREVIEW,
+        payload: pagesToExtract,
+      })
+    }
+  }, [pagesToExtract])
 
   const handleType = (e: ChangeEvent<HTMLInputElement>) => {
     const type = e.target.value
@@ -118,13 +136,18 @@ export default function SplitTool() {
   }
 
   const isCustomValid = (str: string, lastChar: string) => {
-    if (isNum(lastChar)) return true
     if (lastChar === ' ') return false
     if (str.length <= 1) {
       //1st char is number. No char means empty str
       return str.length === 1 ? isNum(lastChar) : str === ''
     }
     const prevChar = str.charAt(str.length - 2)
+    if (isNum(lastChar)) {
+      if (lastChar === '0') {
+        return prevChar !== ','
+      }
+      return true
+    }
     if (lastChar === '-') {
       return isNum(prevChar) && isDashValid(str, str.length)
     }
@@ -197,12 +220,13 @@ export default function SplitTool() {
       </ToolBtn>
       <ToolMenu>
         <div className={styles.menu_content}>
-          <div onChange={handleType}>
+          <div>
             <label htmlFor="range">Range</label>
             <input
               type="radio"
               name="rangeType"
               value="range"
+              onChange={handleType}
               checked={rangeType === 'range'}
             />
             <label htmlFor="custom">Custom</label>
@@ -210,6 +234,7 @@ export default function SplitTool() {
               type="radio"
               name="rangeType"
               value="custom"
+              onChange={handleType}
               checked={rangeType === 'custom'}
             />
           </div>

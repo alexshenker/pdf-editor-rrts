@@ -10,3 +10,6 @@ export const ZOOM_CUSTOM = 'ZOOM_CUSTOM'
 export const PAGE_DOWN = 'PAGE_DOWN'
 export const PAGE_UP = 'PAGE_UP'
 export const PAGE_CUSTOM = 'PAGE_CUSTOM'
+
+export const CREATE_SPLIT_PREVIEW = 'CREATE_SPLIT_PREVIEW'
+export const SET_LOADING_FALSE = 'SET_LOADING_FALSE'
