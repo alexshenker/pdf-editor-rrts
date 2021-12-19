@@ -1,6 +1,7 @@
+import { JsxElement } from 'typescript'
 import { AnyAction } from 'redux'
 
-const initialState = {
+const initialState: { width: number } = {
   width: 125,
 }
 

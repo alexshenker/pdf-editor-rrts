@@ -1,13 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../../reducers'
+import { RootState } from '../../reducers'
 
-import styles from './SplitTool.module.css'
+import styles from './LeftPane.module.css'
 
 //HELPERS
 import { createPreview } from './helpers'
 
-export default function SplitPreview() {
+export default function Preview() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const splitInfo: number[] = useSelector(
     (state: RootState) => state.split.splitInfo
@@ -31,7 +31,7 @@ export default function SplitPreview() {
   }, [splitInfo, leftpaneWidth, pdf])
 
   return (
-    <div className={styles.split_preview}>
+    <div className={styles.preview}>
       <canvas ref={canvasRef}></canvas>
       <>
         {isLoading ? null : (

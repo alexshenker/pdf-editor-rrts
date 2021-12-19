@@ -1,4 +1,3 @@
-export * from './createPreview'
 export * from './customSplitter'
 export * from './rangeSplitter'
 export * from './isDashValid'
