@@ -104,7 +104,7 @@ export default function Viewer() {
           canvasContext: ctx,
           viewport,
         }
-        pageDoc.render(renderCtx).promise.then(() =>
+        await pageDoc.render(renderCtx).promise.then(() =>
           dispatch({
             type: ENABLE_TOOLBAR,
           })
