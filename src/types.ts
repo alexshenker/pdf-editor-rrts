@@ -1,4 +1,4 @@
-import { ChangeEvent, InputHTMLAttributes, RefObject } from 'react'
+import { ChangeEvent, RefObject } from 'react'
 
 export interface FileStateType {
   pdf: File | null

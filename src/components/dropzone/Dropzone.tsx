@@ -23,6 +23,7 @@ export default function Dropzone() {
     const file = e.target.files[0]
     file.arrayBuffer().then(async (arrayBuffer) => {
       //creates a PDFDocument instance using arrayBuffer
+
       const pdfDocument = await PDFDocument.load(new Uint8Array(arrayBuffer), {
         ignoreEncryption: true,
       })
