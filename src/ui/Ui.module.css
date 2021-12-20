@@ -39,21 +39,28 @@
   font-size: var(--tool-font-size);
 }
 
-/* RADIO INPUT */
-.radio_input {
-  padding: var(--tool-btn-padding);
-  display: flex;
-}
-.radio_input label {
-  margin-right: var(--tool-btn-padding);
-}
-
 .Input {
   padding: var(--tool-btn-padding);
   display: flex;
   align-items: center;
 }
 .Input label {
+  margin-right: var(--tool-btn-padding);
+}
+
+/* RADIO INPUT */
+.radio_input {
+  padding: var(--tool-btn-padding) 7px;
+  display: flex;
+  border-radius: 14px;
+}
+.radio_input_checked {
+  background-color: wheat;
+}
+.radio_input input {
+  margin: auto 4px auto 0;
+}
+.radio_input label {
   margin-right: var(--tool-btn-padding);
 }
 

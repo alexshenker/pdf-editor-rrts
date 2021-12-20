@@ -113,8 +113,7 @@ export default function SplitTool() {
     }
   }, [pagesToExtract, dispatch, getError])
 
-  const handleType = (e: ChangeEvent<HTMLInputElement>) => {
-    const type = e.target.value
+  const handleType = (type: string) => {
     if (type === 'range' || type === 'custom') {
       setRangeType(type)
     }
@@ -199,14 +198,14 @@ export default function SplitTool() {
             <RadioInput
               name="rangeType"
               labelFor="range"
-              handleChange={handleType}
+              handleChange={() => handleType('range')}
               labelText="Range"
               checked={rangeType === 'range'}
             />
             <RadioInput
               name="rangeType"
               labelFor="custom"
-              handleChange={handleType}
+              handleChange={() => handleType('custom')}
               labelText="Custom"
               checked={rangeType === 'custom'}
             />

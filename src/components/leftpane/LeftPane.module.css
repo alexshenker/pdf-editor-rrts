@@ -2,12 +2,16 @@
   height: 100%;
   padding: 5px;
   background-color: rgba(0, 0, 0, 0.8);
+  overflow-y: scroll;
 }
 .leftpane_closed {
+  position: absolute;
+  bottom: 0px;
   height: 0px;
   padding: 0px;
   background-color: transparent;
   opacity: 0;
+  z-index: -999;
 }
 
 .preview canvas {
@@ -18,4 +22,15 @@
   height: 0px;
   width: 0px;
   background-color: transparent;
+}
+
+.leftpane_header {
+  color: white;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.preview_page:hover img {
+  opacity: 0.8;
+  transition-duration: 0.21s;
 }

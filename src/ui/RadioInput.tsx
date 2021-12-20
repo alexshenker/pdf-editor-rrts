@@ -11,9 +11,12 @@ const RadioInput: FC<RadioInputProps> = ({
   checked,
   name,
 }) => {
+  const className = checked
+    ? `${styles.radio_input} ${styles.radio_input_checked}`
+    : styles.radio_input
+
   return (
-    <div className={styles.radio_input}>
-      {labelText && <label htmlFor={labelFor}>{labelText}</label>}
+    <div onClick={handleChange} className={className}>
       <input
         type="radio"
         name={name}
@@ -21,6 +24,7 @@ const RadioInput: FC<RadioInputProps> = ({
         onChange={handleChange}
         checked={checked}
       />
+      {labelText && <label htmlFor={labelFor}>{labelText}</label>}
     </div>
   )
 }
