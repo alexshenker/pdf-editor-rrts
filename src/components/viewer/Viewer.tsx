@@ -123,10 +123,9 @@ export default function Viewer() {
   const mouseUp = () => {
     setIsDrag(false)
   }
+
   const mouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
-    const x = e.movementX * -1
-    const y = e.movementY * -1
-    canvasContainerRef.current?.scrollBy(x, y)
+    canvasContainerRef.current?.scrollBy(e.movementX * -1, e.movementY * -1)
   }
 
   return (
