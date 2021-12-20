@@ -78,7 +78,7 @@ export default function Preview() {
       <canvas ref={canvasRef}></canvas>
       <>
         {isLoading ? null : (
-          <div>
+          <div className={styles.preview_pages_container}>
             {jpgUrls.map((url, idx) => {
               return (
                 <div
