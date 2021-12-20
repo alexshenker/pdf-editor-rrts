@@ -1,4 +1,3 @@
-
 :root {
   --inputBox-height: 200px;
   --inputBox-width: 100%;
@@ -15,10 +14,10 @@
   position: absolute;
   height: 0px;
   width: 0px;
-  padding: calc(var(--inputBox-height)/2) 100%;
+  padding: calc(var(--inputBox-height) / 2) 50vw;
   cursor: copy;
 }
-input[type=file]::file-selector-button {
+input[type='file']::file-selector-button {
   display: none;
 }
 
@@ -29,9 +28,9 @@ input[type=file]::file-selector-button {
 .inputBox {
   height: var(--inputBox-height);
   width: var(--inputBox-width);
-  box-shadow:inset 0 0 8px rgba(0,0,0,0.4);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
-  /* Inner Elements */ 
+  /* Inner Elements */
   display: flex;
   justify-content: center;
   align-items: center;

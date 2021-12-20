@@ -33,7 +33,8 @@ export async function createPreview(
     const viewport = page.getViewport({ scale: 0.25 }),
       width = viewport.width,
       height = viewport.height,
-      desiredWidth = leftpaneWidth,
+      //-15 to support scrollbar
+      desiredWidth = leftpaneWidth - 15,
       outputScale = 1 / (width / desiredWidth),
       transform = [outputScale, 0, 0, outputScale, 0, 0]
 

@@ -32,10 +32,12 @@ export default function Viewer() {
   const zoom: Number = useSelector((state: RootState) => state.zoom)
   const pageNum: number = useSelector((state: RootState) => state.page)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
+  const pdfHeight = useSelector((state: RootState) => state.file.height)
 
   useEffect(() => {
     if (canvasRef.current) {
       canvasRef.current.style.width = `${zoom}%`
+      canvasRef.current.style.height = `${zoom}%`
     }
   }, [zoom])
 
@@ -89,7 +91,7 @@ export default function Viewer() {
   }, [pageNum, pdf, dispatch])
 
   return (
-    <div className={styles.viewer}>
+    <div style={{ height: pdfHeight || 'auto' }} className={styles.viewer}>
       <canvas ref={canvasRef} />
     </div>
   )

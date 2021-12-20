@@ -2,7 +2,7 @@ import { AnyAction } from 'redux'
 import { OPEN_LEFT_PANE, CLOSE_LEFT_PANE } from '../actionTypes'
 
 const initialState: { width: number; isOpen: boolean } = {
-  width: 125,
+  width: 140,
   isOpen: false,
 }
 
