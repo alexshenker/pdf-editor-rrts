@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react'
-
+//TYPE
+import { MouseEvent } from 'react'
 //Action types
 import { ENABLE_TOOLBAR, DISABLE_TOOLBAR } from '../../actionTypes'
 
@@ -29,7 +30,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js'
 export default function Viewer() {
   const dispatch = useDispatch()
 
-  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const canvasContainerRef = useRef<HTMLDivElement>(null)
+
   const filePdf = useSelector((state: RootState) => state.file.pdf)
   const zoom: Number = useSelector((state: RootState) => state.zoom)
   const pageNum: number = useSelector((state: RootState) => state.page)
@@ -111,9 +114,35 @@ export default function Viewer() {
     renderPage()
   }, [pageNum, pdf, dispatch])
 
+  //DRAG SCROLL
+  const [isDrag, setIsDrag] = useState(false)
+
+  const mouseDown = () => {
+    setIsDrag(true)
+  }
+  const mouseUp = () => {
+    setIsDrag(false)
+  }
+  const mouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
+    const x = e.movementX * -1
+    const y = e.movementY * -1
+    canvasContainerRef.current?.scrollBy(x, y)
+  }
+
   return (
-    <div style={{ height: pdfHeight || 'auto' }} className={styles.viewer}>
-      <canvas ref={canvasRef} />
+    <div
+      ref={canvasContainerRef}
+      style={{ height: pdfHeight || 'auto' }}
+      className={styles.viewer}
+    >
+      <canvas
+        onMouseDown={mouseDown}
+        onMouseUp={mouseUp}
+        onMouseLeave={mouseUp}
+        {...(isDrag && { onMouseMove: (e) => mouseMove(e) })}
+        ref={canvasRef}
+      />
     </div>
   )
 }
+//canvasContainerRef.current?.scrollBy(0, 200)
