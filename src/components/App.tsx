@@ -16,7 +16,7 @@ function App() {
         <div>
           <LeftPane />
         </div>
-        <div>
+        <div className={styles.app_viewer_container}>
           <Toolbar />
           <Viewer />
         </div>

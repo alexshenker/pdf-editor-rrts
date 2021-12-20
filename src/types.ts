@@ -6,6 +6,7 @@ export interface FileStateType {
   byteSize: number
   width: number
   height: number
+  wByHRatio: number | null
 }
 
 export interface ToolBtnProps {

@@ -11,6 +11,7 @@ const initialState = {
   byteSize: 0,
   width: 0,
   height: 0,
+  wByHRatio: null,
 }
 
 export default function fileReducer(

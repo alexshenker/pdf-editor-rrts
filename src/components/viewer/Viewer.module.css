@@ -1,10 +1,7 @@
 .viewer {
   height: 100%;
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   overflow: auto;
-}
-
-.viewer canvas {
-  height: auto;
 }

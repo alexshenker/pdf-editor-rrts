@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react'
 
 //Action types
 import { ENABLE_TOOLBAR, DISABLE_TOOLBAR } from '../../actionTypes'
@@ -7,6 +7,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import styles from './Viewer.module.css'
 import { RootState } from '../../reducers'
 
+//Debounce allows to easily set back the handling of resize events.
+import debounce from 'lodash.debounce'
 //PDF VIEWER/LOADER
 /**
  * Originally used React-Pdf to access the pdfjs library
@@ -32,7 +34,26 @@ export default function Viewer() {
   const zoom: Number = useSelector((state: RootState) => state.zoom)
   const pageNum: number = useSelector((state: RootState) => state.page)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
+  const wByHRatio = useSelector((state: RootState) => state.file.wByHRatio)
   const pdfHeight = useSelector((state: RootState) => state.file.height)
+
+  const resizeHandler = useCallback(() => {
+    //ensures pdf ratio is correct
+    if (!canvasRef.current || !wByHRatio) return
+    canvasRef.current.style.height = `${
+      canvasRef.current.offsetWidth / wByHRatio
+    }px`
+  }, [wByHRatio])
+
+  //allows postponing handler to avoid overuse
+  const debouncedResizeHandler = useMemo(
+    () => debounce(resizeHandler, 50),
+    [resizeHandler]
+  )
+
+  useEffect(() => {
+    window.addEventListener('resize', debouncedResizeHandler)
+  }, [debouncedResizeHandler])
 
   useEffect(() => {
     if (canvasRef.current) {

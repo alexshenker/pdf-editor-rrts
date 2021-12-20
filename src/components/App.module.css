@@ -1,4 +1,9 @@
 .app_body {
   display: flex;
   height: 100vh;
+  width: 100%;
+}
+
+.app_viewer_container {
+  width: 100%;
 }

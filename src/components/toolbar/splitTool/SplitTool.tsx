@@ -27,7 +27,7 @@ import { rangeSplitter, customSplitter, isNum, isCustomValid } from './helpers'
 
 export default function SplitTool() {
   //STATE
-  const [active, setActive] = useState(true)
+  const [active, setActive] = useState(false)
   const [open, setOpen] = useState(false)
   const [error, setError] = useState<string | false>(false)
 
@@ -152,7 +152,7 @@ export default function SplitTool() {
   const split = async () => {
     if (!pdf) return
     if (error) return setOpen(true)
-
+    setActive(false)
     const pdfDoc = await createDoc()
     const newDoc = await PDFDocument.create()
     const createSplitDoc = async () => {
@@ -192,59 +192,61 @@ export default function SplitTool() {
       <ToolBtn handleClick={toggleMenu} description="Split File">
         <GiSplitArrows />
       </ToolBtn>
-      <ToolMenu>
-        <div className={styles.menu_content}>
-          <div className={styles.menu_rangetype}>
-            <RadioInput
-              name="rangeType"
-              labelFor="range"
-              handleChange={() => handleType('range')}
-              labelText="Range"
-              checked={rangeType === 'range'}
-            />
-            <RadioInput
-              name="rangeType"
-              labelFor="custom"
-              handleChange={() => handleType('custom')}
-              labelText="Custom"
-              checked={rangeType === 'custom'}
-            />
-          </div>
-          {rangeType === 'range' ? (
-            <div className={styles.menu_inputs}>
-              <Input
-                handleChange={(e) => handleChange('start', e)}
-                value={rangeFrom}
-                inputType="text"
-                labelFor="split_range_from"
-                labelText="From"
-                placeholder="1"
+      {active && (
+        <ToolMenu>
+          <div className={styles.menu_content}>
+            <div className={styles.menu_rangetype}>
+              <RadioInput
+                name="rangeType"
+                labelFor="range"
+                handleChange={() => handleType('range')}
+                labelText="Range"
+                checked={rangeType === 'range'}
               />
-              <Input
-                handleChange={(e) => handleChange('end', e)}
-                value={rangeTo}
-                inputType="text"
-                labelText="To"
-                labelFor="split_range_to"
-                placeholder={numPages}
-              />
-            </div>
-          ) : (
-            <div>
-              <Input
-                handleChange={(e) => handleChange('custom', e)}
-                value={customInput}
-                inputType="text"
-                labelFor="split_custom"
+              <RadioInput
+                name="rangeType"
+                labelFor="custom"
+                handleChange={() => handleType('custom')}
                 labelText="Custom"
-                placeholder="Ex: 3,6-8,12,13"
-                inputWidth="100%"
+                checked={rangeType === 'custom'}
               />
             </div>
-          )}
-          <Button handleClick={split} text="Split" />
-        </div>
-      </ToolMenu>
+            {rangeType === 'range' ? (
+              <div className={styles.menu_inputs}>
+                <Input
+                  handleChange={(e) => handleChange('start', e)}
+                  value={rangeFrom}
+                  inputType="text"
+                  labelFor="split_range_from"
+                  labelText="From"
+                  placeholder="1"
+                />
+                <Input
+                  handleChange={(e) => handleChange('end', e)}
+                  value={rangeTo}
+                  inputType="text"
+                  labelText="To"
+                  labelFor="split_range_to"
+                  placeholder={numPages}
+                />
+              </div>
+            ) : (
+              <div>
+                <Input
+                  handleChange={(e) => handleChange('custom', e)}
+                  value={customInput}
+                  inputType="text"
+                  labelFor="split_custom"
+                  labelText="Custom"
+                  placeholder="Ex: 3,6-8,12,13"
+                  inputWidth="100%"
+                />
+              </div>
+            )}
+            <Button handleClick={split} text="Split" />
+          </div>
+        </ToolMenu>
+      )}
       <Modal
         open={open}
         handleClose={handleClose}

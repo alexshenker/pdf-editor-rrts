@@ -1,5 +1,5 @@
-import React, { FC, useRef, useCallback, useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { FC } from 'react'
+import { useSelector } from 'react-redux'
 import styles from './LeftPane.module.css'
 
 import Preview from './Preview'

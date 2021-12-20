@@ -41,7 +41,8 @@ export default function Dropzone() {
         title = pdfDocument.getTitle,
         byteSize = file.size,
         width = page.getMediaBox().width,
-        height = page.getMediaBox().height
+        height = page.getMediaBox().height,
+        wByHRatio = width / height
       dispatch({
         type: ADD_FILE,
         payload: {
@@ -51,6 +52,7 @@ export default function Dropzone() {
           byteSize,
           width,
           height,
+          wByHRatio,
         },
       })
     })
