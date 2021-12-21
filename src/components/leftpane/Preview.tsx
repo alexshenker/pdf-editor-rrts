@@ -29,17 +29,14 @@ export default function Preview() {
     }
     return numberInfo
   }, [numPages])
+  //SPLITTING / INITIAL LOAD
 
-  //INITIAL LOAD
   useEffect(() => {
+    const info =
+      !splitInfo || splitInfo.length === 0 ? initialPageInfo() : splitInfo
     setIsLoading(true)
     ;(async () => {
-      const urls = await createPreview(
-        pdf,
-        initialPageInfo(),
-        canvasRef,
-        leftpaneWidth
-      )
+      const urls = await createPreview(pdf, info, canvasRef, leftpaneWidth)
       if (urls && urls.length > 0) {
         setJpgUrls(urls)
         dispatch({
@@ -48,23 +45,7 @@ export default function Preview() {
         return setIsLoading(false)
       }
     })()
-  }, [pdf, initialPageInfo, dispatch, leftpaneWidth])
-
-  //SPLITTING
-  useEffect(() => {
-    if (!splitInfo || splitInfo.length === 0) return
-    setIsLoading(true)
-    ;(async () => {
-      const urls = await createPreview(pdf, splitInfo, canvasRef, leftpaneWidth)
-      if (urls && urls.length > 0) {
-        setJpgUrls(urls)
-        dispatch({
-          type: OPEN_LEFT_PANE,
-        })
-        return setIsLoading(false)
-      }
-    })()
-  }, [splitInfo, leftpaneWidth, pdf, dispatch])
+  }, [splitInfo, leftpaneWidth, pdf, dispatch, initialPageInfo])
 
   const setPageNum = (pgNum: number) => {
     dispatch({

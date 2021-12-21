@@ -45,16 +45,9 @@ export async function createPreview(
       transform,
       viewport,
     }
+
     const jpg = await page.render(renderCtx).promise.then(() => {
       const jpgUrl = canvas.toDataURL('image/jpeg', 0.4)
-      fetch(jpgUrl)
-        .then((res) => res.blob())
-        .then((blob) => {
-          const jpegFile = new File([blob], '', {
-            type: 'image/jpeg',
-          })
-          return jpegFile
-        })
       return jpgUrl
     })
     jpgUrlArr.push(jpg)
