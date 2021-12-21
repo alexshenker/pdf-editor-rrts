@@ -18,7 +18,8 @@
   flex-direction: column;
   align-items: center;
 }
-.preview canvas {
+.preview canvas,
+.preview_page canvas {
   opacity: 0;
   display: hidden;
   position: absolute;

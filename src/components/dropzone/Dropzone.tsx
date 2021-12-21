@@ -8,6 +8,7 @@ import Error from '../../ui/Error'
 
 //PDF LOADER
 import { PDFDocument } from 'pdf-lib'
+import { OPEN_LEFT_PANE } from '../../actionTypes'
 
 export default function Dropzone() {
   const dispatch = useDispatch()
@@ -44,6 +45,9 @@ export default function Dropzone() {
         width = page.getMediaBox().width,
         height = page.getMediaBox().height,
         wByHRatio = width / height
+      dispatch({
+        type: OPEN_LEFT_PANE,
+      })
       dispatch({
         type: ADD_FILE,
         payload: {
