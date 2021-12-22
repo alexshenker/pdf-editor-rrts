@@ -5,3 +5,7 @@
   justify-content: flex-start;
   overflow: auto;
 }
+
+.viewer canvas {
+  margin: 0px auto;
+}
