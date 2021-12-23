@@ -6,6 +6,7 @@ import styles from './Toolbar.module.css'
 import TurnPageTool from './turnPageTool/TurnPageTool'
 import ZoomTool from './zoomTool/ZoomTool'
 import SplitTool from './splitTool/SplitTool'
+import RotateTool from './rotateTool/RotateTool'
 //import CompressTool from './compressTool/CompressTool'
 
 export default function Toolbar() {
@@ -14,6 +15,7 @@ export default function Toolbar() {
       <TurnPageTool />
       <ZoomTool />
       <SplitTool />
+      <RotateTool />
     </div>
   )
 }

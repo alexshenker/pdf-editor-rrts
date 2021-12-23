@@ -50,7 +50,7 @@ export default function Viewer() {
 
   //allows postponing handler to avoid overuse
   const debouncedResizeHandler = useMemo(
-    () => debounce(resizeHandler, 50),
+    () => debounce(resizeHandler, 15),
     [resizeHandler]
   )
 
@@ -61,9 +61,11 @@ export default function Viewer() {
   useEffect(() => {
     if (canvasRef.current) {
       canvasRef.current.style.width = `${zoom}%`
-      canvasRef.current.style.height = `${zoom}%`
+      canvasRef.current.style.height = `${
+        canvasRef.current.offsetWidth / wByHRatio
+      }px`
     }
-  }, [zoom])
+  }, [zoom, wByHRatio])
 
   useEffect(() => {
     if (filePdf && canvasRef.current && filePdf instanceof File) {
