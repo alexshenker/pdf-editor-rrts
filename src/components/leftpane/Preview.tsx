@@ -1,10 +1,10 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react'
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../../reducers'
 
 import styles from './LeftPane.module.css'
 //PDF LOADER
-import { createUint8Array } from '../../helpers/createUInt8Array'
+import { createUInt8Array } from '../../helpers/createUInt8Array'
 import { PAGE_CUSTOM } from '../../actionTypes'
 
 import SinglePage from './SinglePage'
@@ -25,6 +25,7 @@ export default function Preview() {
   const numPages = useSelector((state: RootState) => state.file.numPages)
   //Desired Width should directly relate to width of left pane
   const leftpaneWidth = useSelector((state: RootState) => state.leftpane.width)
+
   const [prevInfo, setPrevInfo] = useState<{
     doc: PDFDocumentProxy
     initialPgInfo: number[]
@@ -41,7 +42,7 @@ export default function Preview() {
 
   const createPreviewInfo = useCallback(async () => {
     if (!pdf) return null
-    const uInt8Array = await createUint8Array(pdf)
+    const uInt8Array = await createUInt8Array(pdf)
     const doc = await pdfjsLib
       .getDocument(uInt8Array)
       .promise.then((document) => document)

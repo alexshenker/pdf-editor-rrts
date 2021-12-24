@@ -7,6 +7,7 @@ export interface FileStateType {
   width: number
   height: number
   wByHRatio: number | null
+  affectedPageNum: number | null
 }
 
 export interface ToolBtnProps {

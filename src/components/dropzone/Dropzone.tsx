@@ -22,6 +22,7 @@ export default function Dropzone() {
     if (!e.target.files || !e.target.files[0]) return
 
     const file = e.target.files[0]
+
     file.arrayBuffer().then(async (arrayBuffer) => {
       //creates a PDFDocument instance using arrayBuffer
 
@@ -40,11 +41,12 @@ export default function Dropzone() {
 
       const numPages = pdfDocument.getPageCount(),
         page = pdfDocument.getPage(0),
-        title = pdfDocument.getTitle,
+        title = file.name.replace(/\s+/g, '_').toLowerCase(),
         byteSize = file.size,
         width = page.getMediaBox().width,
         height = page.getMediaBox().height,
         wByHRatio = width / height
+      console.log('TITLE: ', title)
       dispatch({
         type: OPEN_LEFT_PANE,
       })

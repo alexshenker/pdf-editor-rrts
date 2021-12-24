@@ -5,7 +5,7 @@ import { ChangeEvent } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 //ACTION TYPES
-import { CREATE_SPLIT_PREVIEW, SET_EDITED_FILE } from '../../../actionTypes'
+import { CREATE_SPLIT_PREVIEW, SET_SPLIT_FILE } from '../../../actionTypes'
 
 import styles from './SplitTool.module.css'
 //UI
@@ -176,7 +176,7 @@ export default function SplitTool() {
         byteSize = newFile.size
 
       dispatch({
-        type: SET_EDITED_FILE,
+        type: SET_SPLIT_FILE,
         payload: {
           pdf: newFile,
           numPages,
@@ -184,7 +184,6 @@ export default function SplitTool() {
         },
       })
     }
-    return
   }
 
   return (
