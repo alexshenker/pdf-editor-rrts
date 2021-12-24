@@ -46,7 +46,7 @@ export default function Dropzone() {
         width = page.getMediaBox().width,
         height = page.getMediaBox().height,
         wByHRatio = width / height
-      console.log('TITLE: ', title)
+
       dispatch({
         type: OPEN_LEFT_PANE,
       })

@@ -12,6 +12,7 @@ import { AiOutlineRotateRight } from '@react-icons/all-files/ai/AiOutlineRotateR
 import { createUInt8Array } from '../../../helpers/createUInt8Array'
 //ACTIONS
 import { SET_EDITED_FILE } from '../../../actionTypes'
+import { autoDownload } from '../../../helpers/autoDownload'
 
 export default function RotateTool() {
   const dispatch = useDispatch()
@@ -30,14 +31,6 @@ export default function RotateTool() {
 
     page.setRotation(degrees(rotation))
     //switch height with width
-    const h = page.getHeight()
-    const w = page.getWidth()
-    page.setSize(h, w)
-
-    const scaler = w / h
-    page.scaleContent(scaler, scaler)
-    page.translateContent((h - w * scaler) / 2, 0)
-
     pdfDoc.removePage(pageNum - 1)
     pdfDoc.insertPage(pageNum - 1, page)
 
