@@ -34,11 +34,13 @@ export default function Viewer() {
   const canvasContainerRef = useRef<HTMLDivElement>(null)
 
   const filePdf = useSelector((state: RootState) => state.file.pdf)
-  const zoom: Number = useSelector((state: RootState) => state.zoom)
+  const zoom: number = useSelector((state: RootState) => state.zoom)
   const pageNum: number = useSelector((state: RootState) => state.page)
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
   const wByHRatio = useSelector((state: RootState) => state.file.wByHRatio)
   const pdfHeight = useSelector((state: RootState) => state.file.height)
+
+  const [rotated, setRotated] = useState(false)
 
   const resizeHandler = useCallback(() => {
     //ensures pdf ratio is correct
@@ -60,12 +62,19 @@ export default function Viewer() {
 
   useEffect(() => {
     if (canvasRef.current) {
-      canvasRef.current.style.width = `${zoom}%`
-      canvasRef.current.style.height = `${
-        canvasRef.current.offsetWidth / wByHRatio
-      }px`
+      if (rotated) {
+        canvasRef.current.style.width = `${zoom}%`
+        canvasRef.current.style.height = `${
+          canvasRef.current.offsetWidth * wByHRatio
+        }px`
+      } else {
+        canvasRef.current.style.width = `${zoom}%`
+        canvasRef.current.style.height = `${
+          canvasRef.current.offsetWidth / wByHRatio
+        }px`
+      }
     }
-  }, [zoom, wByHRatio])
+  }, [zoom, wByHRatio, rotated])
 
   useEffect(() => {
     if (filePdf && canvasRef.current && filePdf instanceof File) {
@@ -100,8 +109,17 @@ export default function Viewer() {
         if (!ctx || !(ctx instanceof CanvasRenderingContext2D)) return
         //scale exaggerated for quality
         const viewport = pageDoc.getViewport({ scale: 4 })
-        canvas.width = viewport.width
-        canvas.height = viewport.height
+        const width = viewport.width
+        const height = viewport.height
+        if (width > height) {
+          //page is rotated
+          canvas.width = width
+          canvas.height = height
+          setRotated(true)
+        } else {
+          canvas.width = width
+          canvas.height = height
+        }
         const renderCtx = {
           canvasContext: ctx,
           viewport,
