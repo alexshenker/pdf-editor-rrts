@@ -12,7 +12,6 @@ import { AiOutlineRotateRight } from '@react-icons/all-files/ai/AiOutlineRotateR
 import { createUInt8Array } from '../../../helpers/createUInt8Array'
 //ACTIONS
 import { SET_EDITED_FILE } from '../../../actionTypes'
-import { autoDownload } from '../../../helpers/autoDownload'
 
 export default function RotateTool() {
   const dispatch = useDispatch()

@@ -65,7 +65,7 @@ export default function Viewer() {
       if (rotated) {
         canvasRef.current.style.width = `${zoom}%`
         canvasRef.current.style.height = `${
-          canvasRef.current.offsetWidth * wByHRatio
+          canvasRef.current.offsetWidth * wByHRatio * (zoom / 100)
         }px`
       } else {
         canvasRef.current.style.width = `${zoom}%`
@@ -117,6 +117,9 @@ export default function Viewer() {
           canvas.height = height
           setRotated(true)
         } else {
+          if (rotated) {
+            setRotated(false)
+          }
           canvas.width = width
           canvas.height = height
         }
@@ -124,6 +127,7 @@ export default function Viewer() {
           canvasContext: ctx,
           viewport,
         }
+
         await pageDoc.render(renderCtx).promise.then(() =>
           dispatch({
             type: ENABLE_TOOLBAR,
@@ -155,6 +159,7 @@ export default function Viewer() {
       className={styles.viewer}
     >
       <canvas
+        style={{ width: zoom || '100%' }}
         onMouseDown={mouseDown}
         onMouseUp={mouseUp}
         onMouseLeave={mouseUp}
