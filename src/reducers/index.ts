@@ -7,6 +7,8 @@ import splitReducer from './splitReducer'
 import pageReducer from './pageReducer'
 import leftpaneReducer from './leftpaneReducer'
 
+import testReducer from './testReducer'
+
 const rootReducer = combineReducers({
   file: fileReducer,
   toolbar: toolbarReducer,
@@ -14,6 +16,7 @@ const rootReducer = combineReducers({
   page: pageReducer,
   split: splitReducer,
   leftpane: leftpaneReducer,
+  test: testReducer,
 })
 
 export default rootReducer

@@ -1,14 +1,15 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import styles from './Dropzone.module.css'
-import { useDispatch } from 'react-redux'
-import { ADD_FILE } from '../../actionTypes'
-//TESTING
+import { useDispatch, useSelector } from 'react-redux'
+import { ADD_FILE, SET_TEST_PDF_DATA } from '../../actionTypes'
+//COMPONENTS
 import Modal from '../../ui/Modal'
 import Error from '../../ui/Error'
 
 //PDF LOADER
 import { PDFDocument } from 'pdf-lib'
 import { OPEN_LEFT_PANE } from '../../actionTypes'
+import { RootState } from '../../reducers'
 
 export default function Dropzone() {
   const dispatch = useDispatch()
@@ -18,12 +19,17 @@ export default function Dropzone() {
   const [error, setError] = useState<string | boolean>(false)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
+  //TESTING
+  const testPdf = useSelector((state: RootState) => state.test.testPdf)
+
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || !e.target.files[0]) return
-
+    if (!e || !e.target.files || !e.target.files[0]) return
     const file = e.target.files[0]
+    handleBuffer(file)
+  }
 
-    file.arrayBuffer().then(async (arrayBuffer) => {
+  const handleBuffer = (pdfFile: File) => {
+    pdfFile.arrayBuffer().then(async (arrayBuffer: ArrayBuffer) => {
       //creates a PDFDocument instance using arrayBuffer
 
       const pdfDocument = await PDFDocument.load(new Uint8Array(arrayBuffer), {
@@ -41,8 +47,8 @@ export default function Dropzone() {
 
       const numPages = pdfDocument.getPageCount(),
         page = pdfDocument.getPage(0),
-        title = file.name.replace(/\s+/g, '_').toLowerCase(),
-        byteSize = file.size,
+        title = pdfFile.name.replace(/\s+/g, '_').toLowerCase(),
+        byteSize = pdfFile.size,
         width = page.getMediaBox().width,
         height = page.getMediaBox().height,
         wByHRatio = width / height
@@ -53,7 +59,7 @@ export default function Dropzone() {
       dispatch({
         type: ADD_FILE,
         payload: {
-          pdf: file,
+          pdf: pdfFile,
           title,
           numPages,
           byteSize,
@@ -64,6 +70,20 @@ export default function Dropzone() {
       })
     })
   }
+
+  const handleBufferCB = useCallback(handleBuffer, [handleBuffer])
+
+  useEffect(() => {
+    if (testPdf) {
+      handleBufferCB(testPdf)
+    }
+    return function cleanup() {
+      dispatch({
+        type: SET_TEST_PDF_DATA,
+        payload: null,
+      })
+    }
+  }, [testPdf, dispatch, handleBufferCB])
 
   return (
     <div className={styles.dropzone}>
