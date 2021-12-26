@@ -41,7 +41,7 @@ export default function Preview() {
   }, [numPages])
 
   const createPreviewInfo = useCallback(async () => {
-    setPrevInfo(null)
+    //remove current preview display
     if (!pdf) return null
     const uInt8Array = await createUInt8Array(pdf)
     const doc = await pdfjsLib
