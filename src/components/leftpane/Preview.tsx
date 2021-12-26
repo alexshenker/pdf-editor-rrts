@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useRef, useEffect, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../../reducers'
 

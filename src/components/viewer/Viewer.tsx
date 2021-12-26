@@ -136,7 +136,7 @@ export default function Viewer() {
       })
     }
     renderPage()
-  }, [pageNum, pdf, dispatch])
+  }, [pageNum, pdf, dispatch, rotated])
 
   //DRAG SCROLL
   const [isDrag, setIsDrag] = useState(false)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import styles from './LeftPane.module.css'
 
@@ -38,7 +38,7 @@ const SinglePage: React.FC<SinglePageProps> = ({
     if (affectedPageNum === pageNum) {
       setRerenderPdf(pdf)
     }
-  }, [affectedPageNum])
+  }, [affectedPageNum, pdf, pageNum])
 
   const getUrl = useCallback(async () => {
     if ((canvasRef && canvasRef.current) || rerenderPdf) {
@@ -92,7 +92,7 @@ const SinglePage: React.FC<SinglePageProps> = ({
       })
       return setUrl(jpgUrl)
     }
-  }, [doc, pageNum, leftpaneWidth])
+  }, [doc, pageNum, leftpaneWidth, rerenderPdf, dispatch, storedRef])
 
   useEffect(() => {
     let mounted = true

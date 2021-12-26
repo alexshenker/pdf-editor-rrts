@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import styles from './RotateTool.module.css'
 //TypeScript
