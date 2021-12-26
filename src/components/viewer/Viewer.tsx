@@ -65,12 +65,12 @@ export default function Viewer() {
       if (rotated) {
         canvasRef.current.style.width = `${zoom}%`
         canvasRef.current.style.height = `${
-          canvasRef.current.offsetWidth * wByHRatio * (zoom / 100)
+          canvasRef.current.offsetWidth * (zoom / 100) * wByHRatio
         }px`
       } else {
         canvasRef.current.style.width = `${zoom}%`
         canvasRef.current.style.height = `${
-          canvasRef.current.offsetWidth / wByHRatio
+          (canvasRef.current.offsetWidth * (zoom / 100)) / wByHRatio
         }px`
       }
     }
@@ -159,7 +159,6 @@ export default function Viewer() {
       className={styles.viewer}
     >
       <canvas
-        style={{ width: zoom || '100%' }}
         onMouseDown={mouseDown}
         onMouseUp={mouseUp}
         onMouseLeave={mouseUp}
