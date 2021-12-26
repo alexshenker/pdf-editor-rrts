@@ -41,6 +41,7 @@ export default function Preview() {
   }, [numPages])
 
   const createPreviewInfo = useCallback(async () => {
+    setPrevInfo(null)
     if (!pdf) return null
     const uInt8Array = await createUInt8Array(pdf)
     const doc = await pdfjsLib
@@ -48,11 +49,11 @@ export default function Preview() {
       .promise.then((document) => document)
     const initialPgInfo = initialPageInfo()
     const splitInfoInner = splitInfo ? splitInfo : []
-    return {
+    setPrevInfo({
       doc,
       initialPgInfo,
       splitInfo: splitInfoInner,
-    }
+    })
   }, [pdf, initialPageInfo, splitInfo])
 
   const setPageNum = (pgNum: number) => {
@@ -64,8 +65,7 @@ export default function Preview() {
 
   useEffect(() => {
     ;(async () => {
-      const info = await createPreviewInfo()
-      setPrevInfo(info)
+      await createPreviewInfo()
     })()
   }, [createPreviewInfo])
 

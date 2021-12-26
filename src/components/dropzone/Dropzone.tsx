@@ -25,6 +25,9 @@ export default function Dropzone() {
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e || !e.target.files || !e.target.files[0]) return
     const file = e.target.files[0]
+    if (inputRef && inputRef.current) {
+      inputRef.current.value = ''
+    }
     handleBuffer(file)
   }
 
@@ -71,19 +74,21 @@ export default function Dropzone() {
     })
   }
 
+  //TESTING
   const handleBufferCB = useCallback(handleBuffer, [handleBuffer])
 
   useEffect(() => {
     if (testPdf) {
       handleBufferCB(testPdf)
     }
-    return function cleanup() {
+    return () => {
       dispatch({
         type: SET_TEST_PDF_DATA,
         payload: null,
       })
     }
   }, [testPdf, dispatch, handleBufferCB])
+  //END TESTING
 
   return (
     <div className={styles.dropzone}>
